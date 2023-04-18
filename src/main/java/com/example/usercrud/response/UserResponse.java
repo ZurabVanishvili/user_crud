@@ -2,6 +2,8 @@ package com.example.usercrud.response;
 
 import com.example.usercrud.model.UserPosts;
 
+import java.util.List;
+
 
 public class UserResponse {
 
@@ -13,16 +15,10 @@ public class UserResponse {
 
   private String mail;
 
-  private UserPosts posts;
+  private List<UserPostResponse> posts;
 
   public UserResponse(){}
-    public UserResponse(int id, String firstName, String lastName, String mail, UserPosts posts) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.mail = mail;
-        this.posts = posts;
-    }
+
 
     public int getId() {
         return id;
@@ -56,11 +52,11 @@ public class UserResponse {
         this.mail = mail;
     }
 
-    public UserPosts getPosts() {
+    public List<UserPostResponse> getPosts() {
         return posts;
     }
 
-    public void setPosts(UserPosts posts) {
+    public void setPosts(List<UserPostResponse> posts) {
         this.posts = posts;
     }
 

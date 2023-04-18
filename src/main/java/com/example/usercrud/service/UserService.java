@@ -6,12 +6,16 @@ import com.example.usercrud.api.UserPostLocal;
 import com.example.usercrud.model.Comment;
 import com.example.usercrud.model.UserPosts;
 import com.example.usercrud.model.Users;
+import com.example.usercrud.response.UserPostResponse;
+import com.example.usercrud.response.UserResponse;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,21 +36,21 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Users addUser(Users users){
+    public Users addUser(Users users) {
         userLocal.insertUser(users);
         return users;
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Users> getAllUsers(){
+    public List<Users> getAllUsers() {
         return userLocal.getAllUsers();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Users getUser(@PathParam("id") int id){
+    public Users getUser(@PathParam("id") int id) {
         return userLocal.getUserById(id);
     }
 
@@ -55,14 +59,14 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{id}")
     @Transactional
-    public Users updateUser(@PathParam("id") int id, Users user){
+    public Users updateUser(@PathParam("id") int id, Users user) {
         return userLocal.updateUser(id, user);
     }
 
     @DELETE
     @Path("{id}")
     @Transactional
-    public Response deleteUser(@PathParam("id") int id){
+    public Response deleteUser(@PathParam("id") int id) {
 
         userLocal.deleteUser(id);
 
@@ -72,14 +76,14 @@ public class UserService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/posts")
-    public List<UserPosts> getAllPosts(){
+    public List<UserPosts> getAllPosts() {
         return userPostLocal.getAllPosts();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/posts/{id}")
-    public UserPosts getPostById(@PathParam("id")int id){
+    public UserPosts getPostById(@PathParam("id") int id) {
         return userPostLocal.getPostById(id);
     }
 
@@ -87,7 +91,7 @@ public class UserService {
     @Path("/posts/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response addPostToUser(@PathParam(("id"))int id,  UserPosts post) {
+    public Response addPostToUser(@PathParam(("id")) int id, UserPosts post) {
         Users user = userLocal.getUserById(id);
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -101,7 +105,7 @@ public class UserService {
     @Path("/posts/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response updatePostOfUser(@PathParam("id")int id,  UserPosts post){
+    public Response updatePostOfUser(@PathParam("id") int id, UserPosts post) {
 
         userPostLocal.updatePost(id, post);
 
@@ -111,7 +115,7 @@ public class UserService {
     @DELETE
     @Path("/posts/{id}")
     @Transactional
-    public Response deletePost(@PathParam("id")int id){
+    public Response deletePost(@PathParam("id") int id) {
 
         userPostLocal.deleteUserPost(id);
 
@@ -122,7 +126,7 @@ public class UserService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/comments")
-    public Response getAllComments(){
+    public Response getAllComments() {
         return Response.status(Response.Status.OK).
                 entity(commentLocal.getAllComments()).build();
     }
@@ -131,10 +135,10 @@ public class UserService {
     @Path("/comments/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response addComment(@PathParam("id")int id,  Comment comment){
+    public Response addComment(@PathParam("id") int id, Comment comment) {
 
         UserPosts post = userPostLocal.getPostById(id);
-        if (post==null){
+        if (post == null) {
             throw new NotFoundException("Post not found");
         }
 
@@ -148,7 +152,7 @@ public class UserService {
     @Path("/comments/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response updateComment(@PathParam("id")int id, Comment comment){
+    public Response updateComment(@PathParam("id") int id, Comment comment) {
         commentLocal.updateComment(id, comment);
         return Response.status(Response.Status.CREATED).build();
 
@@ -157,22 +161,46 @@ public class UserService {
     @DELETE
     @Transactional
     @Path("/comments/{id}")
-    public Response deleteComment(@PathParam("id")int id){
+    public Response deleteComment(@PathParam("id") int id) {
 
         commentLocal.removeComment(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
 
-//    @GET
-//    @Path("/getarray")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getArray(){
-//        List<String> list = new ArrayList<>();
-//        list.add("sf");
-//        list.add("sf");
-//        list.add("sf");
-//        list.add("sf");
-//        return Response.status(Response.Status.OK).entity(list).build();
-//    }
+    @GET
+    @Path("/getUser/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserResponse(@PathParam("id") int id) {
+        Users user = userLocal.getUserById(id);
+
+        UserResponse userResponse = new UserResponse();
+
+
+
+
+        if (user != null) {
+            userResponse.setId(user.getId());
+            userResponse.setMail(user.getMail());
+            userResponse.setFirstName(user.getFirstName());
+            userResponse.setLastName(user.getLastName());
+        }
+
+        List<UserPostResponse> responses =new ArrayList<>();
+        if (user.getPosts()!=null) {
+            for (UserPosts userPosts : user.getPosts()) {
+                UserPostResponse postResponse = new UserPostResponse();
+                postResponse.setContent(userPosts.getContent());
+                postResponse.setId(userPosts.getId());
+                postResponse.setTitle(userPosts.getTitle());
+
+                responses.add(postResponse);
+                userResponse.setPosts(responses);
+            }
+        }
+
+
+
+        return Response.status(Response.Status.OK).entity(userResponse).build();
+    }
 }
