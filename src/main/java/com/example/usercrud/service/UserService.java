@@ -12,8 +12,6 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -86,15 +84,16 @@ public class UserService {
     }
 
     @POST
-    @Path("/posts")
+    @Path("/posts/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response addPostToUser( UserPosts post) {
-        Users user = userLocal.getUserById(post.getOwner().getId());
+    public Response addPostToUser(@PathParam(("id"))int id,  UserPosts post) {
+        Users user = userLocal.getUserById(id);
         if (user == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         userPostLocal.insertPost(post);
+        user.addPost(post);
         return Response.status(Response.Status.CREATED).entity(post).build();
     }
 

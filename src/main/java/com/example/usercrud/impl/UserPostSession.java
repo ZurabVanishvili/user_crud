@@ -41,9 +41,9 @@ public class UserPostSession implements UserPostLocal {
 
     @Override
     public UserPosts insertPost(UserPosts userPosts) {
-        Users owner = entityManager.find(Users.class, userPosts.getOwner().getId());
-
-        userPosts.setOwner(owner);
+//        Users owner = entityManager.find(Users.class, userPosts.getOwner().getId());
+//
+//        userPosts.setOwner(owner);
 
         entityManager.persist(userPosts);
         return userPosts;

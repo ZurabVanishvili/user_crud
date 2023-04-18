@@ -1,6 +1,8 @@
 package com.example.usercrud.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import static java.util.Optional.ofNullable;
@@ -8,8 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-
+@SuppressWarnings("unused")
 public class UserPosts {
 
     @Id
@@ -21,10 +22,12 @@ public class UserPosts {
     @Column(unique = true)
     private String title;
 
+    @JsonIgnore
     private Timestamp creationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
+    @JsonBackReference
     private Users owner;
 
     @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)

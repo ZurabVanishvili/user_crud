@@ -1,14 +1,13 @@
 package com.example.usercrud.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
 import java.sql.Timestamp;
 
 @Entity
+@SuppressWarnings("unused")
 public class Comment {
 
     @Id

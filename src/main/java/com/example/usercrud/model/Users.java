@@ -1,15 +1,15 @@
 package com.example.usercrud.model;
 import static java.util.Optional.ofNullable;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-
+@SuppressWarnings("unused")
 public class Users {
 
     @Id
@@ -24,6 +24,7 @@ public class Users {
     private String mail;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<UserPosts> posts;
 
 
@@ -66,6 +67,13 @@ public class Users {
 
     public void setMail(String email) {
         this.mail = email;
+    }
+
+    public void addPost(UserPosts post) {
+        if (posts == null) {
+            posts = new ArrayList<>();
+        }
+        post.setOwner(this);
     }
 
 
