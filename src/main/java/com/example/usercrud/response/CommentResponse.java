@@ -7,6 +7,11 @@ public class CommentResponse {
 
     private String commentContent;
 
+    public CommentResponse(int id, String commentContent) {
+        this.id = id;
+        this.commentContent = commentContent;
+    }
+
     public CommentResponse(){}
 
     public int getId() {

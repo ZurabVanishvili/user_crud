@@ -7,8 +7,8 @@ import com.example.usercrud.model.Comment;
 import com.example.usercrud.model.UserPosts;
 import com.example.usercrud.model.Users;
 import com.example.usercrud.response.CommentResponse;
-import com.example.usercrud.response.UserPostResponse;
-import com.example.usercrud.response.UserResponse;
+import com.example.usercrud.response.UserPostsResponse;
+import com.example.usercrud.response.UsersResponse;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.transaction.Transactional;
@@ -44,16 +44,21 @@ public class UserService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Users> getAllUsers() {
-        return userLocal.getAllUsers();
+    public Response getAllUsers() {
+        List<Users> users = userLocal.getAllUsers();
+        List<UsersResponse> response = new ArrayList<>();
+        for (Users usersLocal: users){
+            UsersResponse usersResponse = getUserResponseById(usersLocal.getId());
+
+            getUserPosts(usersLocal, usersResponse);
+
+            response.add(usersResponse);
+        }
+        return Response.status(Response.Status.OK).entity(response).build();
+
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("{id}")
-    public Users getUser(@PathParam("id") int id) {
-        return userLocal.getUserById(id);
-    }
+
 
     @PATCH
     @Produces(MediaType.APPLICATION_JSON)
@@ -79,15 +84,42 @@ public class UserService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/posts")
-    public List<UserPosts> getAllPosts() {
-        return userPostLocal.getAllPosts();
+    public Response getAllPosts() {
+        List<UserPosts> userPosts =  userPostLocal.getAllPosts();
+        List<UserPostsResponse> postResponses = null;
+
+        for (UserPosts userPostsLocal: userPosts){
+            UsersResponse usersResponse = getUserResponseById(userPostsLocal.getOwner().getId());
+
+            postResponses = getUserPosts(userPostsLocal.getOwner(), usersResponse);
+        }
+        return Response.status(Response.Status.OK).entity(postResponses).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/posts/{id}")
-    public UserPosts getPostById(@PathParam("id") int id) {
-        return userPostLocal.getPostById(id);
+    public Response getPostById(@PathParam("id") int id) {
+        UserPosts post =  userPostLocal.getPostById(id);
+        if (post==null){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        List<CommentResponse> commentResponses;
+
+        UserPostsResponse response =new UserPostsResponse(post.getId(), post.getContent(), post.getTitle());
+
+        for (Comment comment: post.getComments()){
+            CommentResponse commentResponse =new CommentResponse(comment.getId(),comment.getCommentContent());
+
+            commentResponses = new ArrayList<>();
+            commentResponses.add(commentResponse);
+
+            response.setComments(commentResponses);
+        }
+
+        return Response.status(Response.Status.OK).entity(response).build();
+
+
     }
 
     @POST
@@ -130,8 +162,15 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/comments")
     public Response getAllComments() {
+        List<Comment> comments = commentLocal.getAllComments();
+        List<CommentResponse> response =  new ArrayList<>();
+
+        for (Comment comment: comments){
+            CommentResponse commentResponse = new CommentResponse(comment.getId(),comment.getCommentContent());
+            response.add(commentResponse);
+        }
         return Response.status(Response.Status.OK).
-                entity(commentLocal.getAllComments()).build();
+                entity(response).build();
     }
 
     @POST
@@ -177,43 +216,33 @@ public class UserService {
     public Response getUserResponse(@PathParam("id") int id) {
 
         Users user = userLocal.getUserById(id);
-
-        UserResponse userResponse = getUserResponseById(id);
-
-        getUserPosts(user, userResponse);
-
-        return Response.status(Response.Status.OK).entity(userResponse).build();
+        UsersResponse usersResponse = getUserResponseById(id);
+        getUserPosts(user, usersResponse);
+        return Response.status(Response.Status.OK).entity(usersResponse).build();
     }
 
 
-    private UserResponse getUserResponseById(int id) {
+    private UsersResponse getUserResponseById(int id) {
         Users user = userLocal.getUserById(id);
 
-        UserResponse userResponse = new UserResponse();
+        UsersResponse usersResponse = null;
 
         if (user != null) {
-            userResponse.setId(user.getId());
-            userResponse.setMail(user.getMail());
-            userResponse.setFirstName(user.getFirstName());
-            userResponse.setLastName(user.getLastName());
+            usersResponse = new UsersResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getMail());
         }
 
-        return userResponse;
+        return usersResponse;
     }
 
-    private void getUserPosts(Users user, UserResponse userResponse) {
+    private List<UserPostsResponse> getUserPosts(Users user, UsersResponse usersResponse) {
 
-        List<UserPostResponse> userPostResponses = new ArrayList<>();
+        List<UserPostsResponse> userPostsRespons = new ArrayList<>();
         List<CommentResponse> commentResponses = new ArrayList<>();
         List<Comment> comments;
 
-
         if (user.getPosts() != null) {
             for (UserPosts userPosts : user.getPosts()) {
-                UserPostResponse postResponse = new UserPostResponse();
-                postResponse.setContent(userPosts.getContent());
-                postResponse.setId(userPosts.getId());
-                postResponse.setTitle(userPosts.getTitle());
+                UserPostsResponse postResponse = new UserPostsResponse(userPosts.getId(),userPosts.getContent(), userPosts.getTitle());
 
                 comments = userPosts.getComments();
 
@@ -228,12 +257,13 @@ public class UserService {
                         postResponse.setComments(commentResponses);
                     }
 
-                    userPostResponses.add(postResponse);
-                    userResponse.setPosts(userPostResponses);
+                    userPostsRespons.add(postResponse);
+                    usersResponse.setPosts(userPostsRespons);
                 }
             }
 
         }
+        return userPostsRespons;
     }
 
 

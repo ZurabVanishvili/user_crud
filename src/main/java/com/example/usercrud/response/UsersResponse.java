@@ -3,7 +3,7 @@ package com.example.usercrud.response;
 import java.util.List;
 
 
-public class UserResponse {
+public class UsersResponse {
 
   private int id;
 
@@ -13,10 +13,16 @@ public class UserResponse {
 
   private String mail;
 
-  private List<UserPostResponse> posts;
+  private List<UserPostsResponse> posts;
 
-  public UserResponse(){}
+  public UsersResponse(){}
 
+    public UsersResponse(int id, String firstName, String lastName, String mail) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mail = mail;
+    }
 
     public int getId() {
         return id;
@@ -50,11 +56,11 @@ public class UserResponse {
         this.mail = mail;
     }
 
-    public List<UserPostResponse> getPosts() {
+    public List<UserPostsResponse> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<UserPostResponse> posts) {
+    public void setPosts(List<UserPostsResponse> posts) {
         this.posts = posts;
     }
 

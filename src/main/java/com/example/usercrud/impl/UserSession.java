@@ -2,7 +2,6 @@ package com.example.usercrud.impl;
 
 import com.example.usercrud.api.UserLocal;
 import com.example.usercrud.model.Users;
-import com.example.usercrud.response.UserResponse;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateful;
 import jakarta.inject.Inject;
@@ -12,7 +11,6 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Local

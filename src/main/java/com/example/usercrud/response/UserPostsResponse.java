@@ -3,7 +3,7 @@ package com.example.usercrud.response;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class UserPostResponse {
+public class UserPostsResponse {
 
 
     private int id;
@@ -16,9 +16,10 @@ public class UserPostResponse {
     private List<CommentResponse> comments;
 
 
-    public UserPostResponse(){}
+    public UserPostsResponse(){}
 
-    public UserPostResponse(String content, String title) {
+    public UserPostsResponse(int id, String content, String title) {
+        this.id = id;
         this.content = content;
         this.title = title;
     }
