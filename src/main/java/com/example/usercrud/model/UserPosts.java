@@ -110,6 +110,11 @@ public class UserPosts {
         comment.setPosts(null);
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+
     @Override
     public String toString() {
         return "UserPosts{" +

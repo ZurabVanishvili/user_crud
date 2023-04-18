@@ -6,6 +6,7 @@ import com.example.usercrud.api.UserPostLocal;
 import com.example.usercrud.model.Comment;
 import com.example.usercrud.model.UserPosts;
 import com.example.usercrud.model.Users;
+import com.example.usercrud.response.CommentResponse;
 import com.example.usercrud.response.UserPostResponse;
 import com.example.usercrud.response.UserResponse;
 import jakarta.ejb.EJB;
@@ -176,30 +177,47 @@ public class UserService {
 
         UserResponse userResponse = new UserResponse();
 
-
-
-
         if (user != null) {
             userResponse.setId(user.getId());
             userResponse.setMail(user.getMail());
             userResponse.setFirstName(user.getFirstName());
             userResponse.setLastName(user.getLastName());
+        }else {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        List<UserPostResponse> responses =new ArrayList<>();
-        if (user.getPosts()!=null) {
+        List<UserPostResponse> userPostResponses = new ArrayList<>();
+        List<CommentResponse> commentResponses = new ArrayList<>();
+        List<Comment> comments;
+
+
+        if (user.getPosts() != null) {
             for (UserPosts userPosts : user.getPosts()) {
                 UserPostResponse postResponse = new UserPostResponse();
                 postResponse.setContent(userPosts.getContent());
                 postResponse.setId(userPosts.getId());
                 postResponse.setTitle(userPosts.getTitle());
 
-                responses.add(postResponse);
-                userResponse.setPosts(responses);
+                comments = userPosts.getComments();
+
+                if (comments != null) {
+                    for (Comment comment : comments) {
+                        CommentResponse response = new CommentResponse();
+                        response.setContent(comment.getCommentContent());
+                        response.setId(comment.getId());
+
+                        commentResponses.add(response);
+
+                        postResponse.setComments(commentResponses);
+                    }
+
+                    userPostResponses.add(postResponse);
+                    userResponse.setPosts(userPostResponses);
+                }
             }
+
+
         }
-
-
 
         return Response.status(Response.Status.OK).entity(userResponse).build();
     }

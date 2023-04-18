@@ -1,5 +1,7 @@
 package com.example.usercrud.response;
 
+import java.util.List;
+
 @SuppressWarnings("unused")
 public class UserPostResponse {
 
@@ -11,7 +13,7 @@ public class UserPostResponse {
     private String title;
 
 
-//    private List<Comment> comments;
+    private List<CommentResponse> comments;
 
 
 
@@ -47,6 +49,14 @@ public class UserPostResponse {
         this.title = title;
     }
 
+
+    public List<CommentResponse> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentResponse> comments) {
+        this.comments = comments;
+    }
 
     @Override
     public String toString() {
