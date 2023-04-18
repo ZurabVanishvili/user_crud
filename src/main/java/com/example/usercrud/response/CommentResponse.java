@@ -7,7 +7,6 @@ public class CommentResponse {
 
     private String commentContent;
 
-
     public CommentResponse(){}
 
     public int getId() {

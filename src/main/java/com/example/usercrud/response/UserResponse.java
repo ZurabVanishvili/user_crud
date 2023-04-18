@@ -1,7 +1,5 @@
 package com.example.usercrud.response;
 
-import com.example.usercrud.model.UserPosts;
-
 import java.util.List;
 
 

@@ -37,9 +37,9 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Users addUser(Users users) {
+    public Response addUser(Users users) {
         userLocal.insertUser(users);
-        return users;
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @GET
@@ -60,8 +60,10 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{id}")
     @Transactional
-    public Users updateUser(@PathParam("id") int id, Users user) {
-        return userLocal.updateUser(id, user);
+    public Response updateUser(@PathParam("id") int id, Users user) {
+
+        userLocal.updateUser(id, user);
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @DELETE
@@ -99,7 +101,7 @@ public class UserService {
         }
         userPostLocal.insertPost(post);
         user.addPost(post);
-        return Response.status(Response.Status.CREATED).entity(post).build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @PATCH
@@ -173,6 +175,18 @@ public class UserService {
     @Path("/getUser/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserResponse(@PathParam("id") int id) {
+
+        Users user = userLocal.getUserById(id);
+
+        UserResponse userResponse = getUserResponseById(id);
+
+        getUserPosts(user, userResponse);
+
+        return Response.status(Response.Status.OK).entity(userResponse).build();
+    }
+
+
+    private UserResponse getUserResponseById(int id) {
         Users user = userLocal.getUserById(id);
 
         UserResponse userResponse = new UserResponse();
@@ -182,9 +196,12 @@ public class UserService {
             userResponse.setMail(user.getMail());
             userResponse.setFirstName(user.getFirstName());
             userResponse.setLastName(user.getLastName());
-        }else {
-            return Response.status(Response.Status.NOT_FOUND).build();
         }
+
+        return userResponse;
+    }
+
+    private void getUserPosts(Users user, UserResponse userResponse) {
 
         List<UserPostResponse> userPostResponses = new ArrayList<>();
         List<CommentResponse> commentResponses = new ArrayList<>();
@@ -216,9 +233,9 @@ public class UserService {
                 }
             }
 
-
         }
-
-        return Response.status(Response.Status.OK).entity(userResponse).build();
     }
+
+
+
 }

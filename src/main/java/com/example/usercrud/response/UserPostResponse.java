@@ -16,8 +16,6 @@ public class UserPostResponse {
     private List<CommentResponse> comments;
 
 
-
-
     public UserPostResponse(){}
 
     public UserPostResponse(String content, String title) {
