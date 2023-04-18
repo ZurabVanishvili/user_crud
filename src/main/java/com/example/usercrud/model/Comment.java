@@ -1,5 +1,7 @@
 package com.example.usercrud.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import static java.util.Optional.ofNullable;
@@ -16,10 +18,13 @@ public class Comment {
 
     private String commentContent;
 
+    @JsonIgnore
     private Timestamp commentTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "posts_id")
+    @JsonBackReference
+
     private UserPosts posts;
 
 

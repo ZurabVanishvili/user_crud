@@ -3,6 +3,7 @@ package com.example.usercrud.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import static java.util.Optional.ofNullable;
@@ -31,6 +32,7 @@ public class UserPosts {
     private Users owner;
 
     @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Comment> comments;
 
 

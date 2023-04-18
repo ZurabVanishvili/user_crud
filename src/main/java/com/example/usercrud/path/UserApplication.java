@@ -1,4 +1,4 @@
-package com.example.usercrud.apppath;
+package com.example.usercrud.path;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
