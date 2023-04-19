@@ -27,18 +27,12 @@ public class PostService {
     @EJB
     private UserLocal userLocal;
 
-
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllPosts() {
-        List<UserPosts> userPosts = userPostLocal.getAllPosts();
-        List<UserPostsResponse> postResponses = null;
 
-        for (UserPosts userPostsLocal : userPosts) {
-            postResponses = getUserPostsResponses(userPostsLocal.getOwner());
-        }
-        return Response.status(Response.Status.OK).entity(postResponses).build();
+        List<UserPostsResponse> postsResponses = getAllPostResponse(userPostLocal.getAllPosts());
+        return Response.status(Response.Status.OK).entity(postsResponses).build();
     }
 
     @GET
@@ -55,11 +49,12 @@ public class PostService {
 
 
         for (Comment comment : post.getComments()) {
-            CommentResponse commentResponse = new CommentResponse(comment.getId(), comment.getCommentContent());
+            CommentResponse commentResponse = new CommentResponse(comment.getId(), comment.getCommentContent(), post.getId());
 
             commentResponses.add(commentResponse);
 
         }
+
         UserPostsResponse response = new UserPostsResponse(post.getId(), post.getContent(), post.getTitle(),commentResponses);
 
         return Response.status(Response.Status.OK).entity(response).build();
@@ -104,6 +99,7 @@ public class PostService {
 
 
     static List<UserPostsResponse> getUserPostsResponses(Users user) {
+
         List<UserPostsResponse> userPostsResponse = new ArrayList<>();
         List<CommentResponse> commentResponses;
         List<Comment> comments;
@@ -128,12 +124,38 @@ public class PostService {
                             userPosts.getId(), userPosts.getContent(), userPosts.getTitle(), commentResponses
                     );
 
-
                     userPostsResponse.add(postResponse);
+
                 }
+
             }
 
         }
         return userPostsResponse;
+    }
+
+    private List<UserPostsResponse> getAllPostResponse(List<UserPosts> posts){
+
+        UserPostsResponse response;
+        CommentResponse commentResponse;
+        List<CommentResponse> commentResponseList ;
+        List<Comment> comments;
+        List<UserPostsResponse> postResponses = new ArrayList<>();
+
+        for (UserPosts userPostsLocal : posts) {
+            comments = userPostsLocal.getComments();
+            commentResponseList=new ArrayList<>();
+
+            for (Comment comment: comments){
+                commentResponse = new CommentResponse(comment.getId(),comment.getCommentContent(),comment.getPosts().getId());
+                commentResponseList.add(commentResponse);
+            }
+            response = new UserPostsResponse(userPostsLocal.getId(),
+                    userPostsLocal.getContent(), userPostsLocal.getTitle(),commentResponseList);
+
+
+            postResponses.add(response) ;
+        }
+        return postResponses;
     }
 }

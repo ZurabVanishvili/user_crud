@@ -1,6 +1,5 @@
 package com.example.usercrud.response;
 
-
 @SuppressWarnings("unused")
 public class CommentResponse {
 

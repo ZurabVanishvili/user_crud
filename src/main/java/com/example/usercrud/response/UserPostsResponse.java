@@ -5,13 +5,11 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class UserPostsResponse {
 
-
     private int id;
 
     private String content;
 
     private String title;
-
 
     private List<CommentResponse> comments;
 
@@ -24,6 +22,13 @@ public class UserPostsResponse {
         this.title = title;
         this.comments = comments;
     }
+
+    public UserPostsResponse(int id, String content, String title) {
+        this.id = id;
+        this.content = content;
+        this.title = title;
+    }
+
 
     public int getId() {
         return id;

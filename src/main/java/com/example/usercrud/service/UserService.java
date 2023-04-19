@@ -29,10 +29,7 @@ public class UserService {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserResponse(@PathParam("id") int id) {
-
-        Users user = userLocal.getUserById(id);
         UsersResponse usersResponse = getUserResponseById(id);
-        getUserPosts(user);
         return Response.status(Response.Status.OK).entity(usersResponse).build();
     }
 
@@ -42,10 +39,11 @@ public class UserService {
     public Response getAllUsers() {
         List<Users> users = userLocal.getAllUsers();
         List<UsersResponse> response = new ArrayList<>();
+
         for (Users usersLocal: users){
             UsersResponse usersResponse = getUserResponseById(usersLocal.getId());
 
-            getUserPosts(usersLocal);
+//            getUserPosts(usersLocal);
 
             response.add(usersResponse);
         }
@@ -82,9 +80,6 @@ public class UserService {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-
-
-
     private UsersResponse getUserResponseById(int id) {
         Users user = userLocal.getUserById(id);
 
@@ -101,7 +96,5 @@ public class UserService {
 
         return getUserPostsResponses(user);
     }
-
-
 
 }

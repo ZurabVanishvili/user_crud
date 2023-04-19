@@ -2,7 +2,6 @@ package com.example.usercrud.response;
 
 import java.util.List;
 
-
 @SuppressWarnings("unused")
 
 public class UsersResponse {
