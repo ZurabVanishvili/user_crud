@@ -17,11 +17,13 @@ public class UsersResponse {
 
   public UsersResponse(){}
 
-    public UsersResponse(int id, String firstName, String lastName, String mail) {
+    public UsersResponse(int id, String firstName, String lastName, String mail, List<UserPostsResponse> posts) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.mail = mail;
+        this.posts = posts;
+
     }
 
     public int getId() {

@@ -18,10 +18,11 @@ public class UserPostsResponse {
 
     public UserPostsResponse(){}
 
-    public UserPostsResponse(int id, String content, String title) {
+    public UserPostsResponse(int id, String content, String title, List<CommentResponse> comments) {
         this.id = id;
         this.content = content;
         this.title = title;
+        this.comments = comments;
     }
 
     public int getId() {

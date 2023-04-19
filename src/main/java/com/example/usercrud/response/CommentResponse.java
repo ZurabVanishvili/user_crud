@@ -7,6 +7,14 @@ public class CommentResponse {
 
     private String commentContent;
 
+    private int post_id;
+
+    public CommentResponse(int id, String commentContent, int post_id) {
+        this.id = id;
+        this.commentContent = commentContent;
+        this.post_id = post_id;
+    }
+
     public CommentResponse(int id, String commentContent) {
         this.id = id;
         this.commentContent = commentContent;
@@ -30,6 +38,13 @@ public class CommentResponse {
         this.commentContent = content;
     }
 
+    public int getPost_id() {
+        return post_id;
+    }
+
+    public void setPost_id(int post_id) {
+        this.post_id = post_id;
+    }
 
     @Override
     public String toString() {
