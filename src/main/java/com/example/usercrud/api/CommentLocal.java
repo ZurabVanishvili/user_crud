@@ -12,7 +12,7 @@ public interface CommentLocal {
 
     void addComment(Comment comment);
 
-    Comment updateComment(int commentId, Comment comment);
+    void updateComment(int commentId, Comment comment);
 
     void removeComment(int id);
 }

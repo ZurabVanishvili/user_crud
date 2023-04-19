@@ -10,9 +10,9 @@ public interface UserPostLocal {
 
     List<UserPosts> getAllPosts();
 
-    UserPosts insertPost(UserPosts userPosts);
+    void insertPost(UserPosts userPosts);
 
-    UserPosts updatePost(int postId, UserPosts newPost);
+    void updatePost(int postId, UserPosts newPost);
 
     void deleteUserPost(int id);
 

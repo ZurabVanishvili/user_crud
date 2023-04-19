@@ -15,6 +15,8 @@ import java.util.List;
 
 @Local
 @Stateful
+@SuppressWarnings("unused")
+
 public class UserSession implements UserLocal {
 
     @Inject
@@ -43,12 +45,12 @@ public class UserSession implements UserLocal {
     }
 
     @Override
-    public Users updateUser(int id, Users users) {
+    public void updateUser(int id, Users users) {
         Users presentUsers = getUserById(id);
 
         if (presentUsers !=null){
             presentUsers.updateUser(users);
-            return presentUsers;
+            return;
 
         }
         throw new NotFoundException("User not found");

@@ -47,8 +47,6 @@ public class CommentService {
     @Transactional
     public Response addComment(@PathParam("id") int id, Comment comment) {
 
-        PostService postService = new PostService();
-
         UserPosts post = userPostLocal.getPostById(id);
         if (post == null) {
             throw new NotFoundException("Post not found");

@@ -1,10 +1,7 @@
 package com.example.usercrud.impl;
 
 import com.example.usercrud.api.CommentLocal;
-import com.example.usercrud.api.UserPostLocal;
 import com.example.usercrud.model.Comment;
-import com.example.usercrud.model.UserPosts;
-import jakarta.ejb.EJB;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateful;
 import jakarta.inject.Inject;
@@ -16,6 +13,8 @@ import java.util.List;
 
 @Stateful
 @Local
+@SuppressWarnings("unused")
+
 public class CommentSession implements CommentLocal {
 
     @Inject
@@ -43,12 +42,12 @@ public class CommentSession implements CommentLocal {
     }
 
     @Override
-    public Comment updateComment(int commentId,  Comment comment) {
+    public void updateComment(int commentId, Comment comment) {
         Comment localComment = getCommentById(commentId);
 
         if (localComment!=null){
             localComment.updateComment(comment);
-            return localComment;
+            return;
         }
         throw new NotFoundException("Comment doesn't exist");
     }

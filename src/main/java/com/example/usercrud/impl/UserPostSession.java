@@ -1,10 +1,7 @@
 package com.example.usercrud.impl;
 
-import com.example.usercrud.api.UserLocal;
 import com.example.usercrud.api.UserPostLocal;
 import com.example.usercrud.model.UserPosts;
-import com.example.usercrud.model.Users;
-import jakarta.ejb.EJB;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateful;
 import jakarta.inject.Inject;
@@ -40,23 +37,19 @@ public class UserPostSession implements UserPostLocal {
     }
 
     @Override
-    public UserPosts insertPost(UserPosts userPosts) {
-//        Users owner = entityManager.find(Users.class, userPosts.getOwner().getId());
-//
-//        userPosts.setOwner(owner);
+    public void insertPost(UserPosts userPosts) {
 
         entityManager.persist(userPosts);
-        return userPosts;
     }
 
 
     @Override
-    public UserPosts updatePost(int postId, UserPosts newPost) {
+    public void updatePost(int postId, UserPosts newPost) {
         UserPosts userPost = getPostById(postId);
 
         if (userPost != null ){
             userPost.updateUserPosts(newPost);
-            return userPost;
+            return;
         }
         throw new NotFoundException("Post not found");
     }

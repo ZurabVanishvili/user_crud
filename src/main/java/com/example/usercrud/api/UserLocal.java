@@ -12,7 +12,7 @@ public interface UserLocal {
 
     void insertUser(Users users);
 
-    Users updateUser(int id, Users users);
+    void updateUser(int id, Users users);
 
     void deleteUser(int id);
 
