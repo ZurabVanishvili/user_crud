@@ -1,9 +1,10 @@
 package com.example.usercrud.impl;
 
 import com.example.usercrud.api.CommentLocal;
-import com.example.usercrud.model.Comment;
+import com.example.usercrud.entity.Comment;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateful;
+import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -11,7 +12,7 @@ import jakarta.ws.rs.NotFoundException;
 
 import java.util.List;
 
-@Stateful
+@Stateless
 @Local
 @SuppressWarnings("unused")
 
@@ -19,8 +20,6 @@ public class CommentSession implements CommentLocal {
 
     @Inject
     private EntityManager entityManager;
-
-
 
     @Override
     public Comment getCommentById(int id) {

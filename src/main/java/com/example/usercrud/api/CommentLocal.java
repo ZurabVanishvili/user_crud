@@ -1,6 +1,6 @@
 package com.example.usercrud.api;
 
-import com.example.usercrud.model.Comment;
+import com.example.usercrud.entity.Comment;
 
 import java.util.List;
 

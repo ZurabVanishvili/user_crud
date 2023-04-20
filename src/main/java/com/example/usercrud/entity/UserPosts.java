@@ -1,4 +1,4 @@
-package com.example.usercrud.model;
+package com.example.usercrud.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
+@Table(name = "userPosts")
 @SuppressWarnings("unused")
 public class UserPosts {
 
@@ -29,7 +30,7 @@ public class UserPosts {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     @JsonBackReference
-    private Users owner;
+    private User owner;
 
     @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -47,7 +48,7 @@ public class UserPosts {
 
     public UserPosts(){}
 
-    public UserPosts(String content, String title, Timestamp creationDate, Users owner, List<Comment> comments) {
+    public UserPosts(String content, String title, Timestamp creationDate, User owner, List<Comment> comments) {
         this.content = content;
         this.title = title;
         this.creationDate = creationDate;
@@ -87,11 +88,11 @@ public class UserPosts {
         this.creationDate = creationDate;
     }
 
-    public Users getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(Users owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 

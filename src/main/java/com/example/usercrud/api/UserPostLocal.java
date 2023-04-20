@@ -1,6 +1,6 @@
 package com.example.usercrud.api;
 
-import com.example.usercrud.model.UserPosts;
+import com.example.usercrud.entity.UserPosts;
 
 import java.util.List;
 

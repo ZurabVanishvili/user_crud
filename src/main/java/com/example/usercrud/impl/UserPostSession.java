@@ -1,9 +1,10 @@
 package com.example.usercrud.impl;
 
 import com.example.usercrud.api.UserPostLocal;
-import com.example.usercrud.model.UserPosts;
+import com.example.usercrud.entity.UserPosts;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateful;
+import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -11,15 +12,12 @@ import jakarta.ws.rs.NotFoundException;
 
 import java.util.List;
 
-@Stateful
+@Stateless
 @Local
 public class UserPostSession implements UserPostLocal {
 
     @Inject
     private EntityManager entityManager;
-
-
-
 
     @Override
     public UserPosts getPostById(int id) {
@@ -38,7 +36,6 @@ public class UserPostSession implements UserPostLocal {
 
     @Override
     public void insertPost(UserPosts userPosts) {
-
         entityManager.persist(userPosts);
     }
 

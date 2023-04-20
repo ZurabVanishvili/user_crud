@@ -1,19 +1,15 @@
 package com.example.usercrud.service;
-import com.example.usercrud.api.UserLocal;
-import com.example.usercrud.model.Users;
-import com.example.usercrud.response.UserPostsResponse;
-import com.example.usercrud.response.UsersResponse;
-import jakarta.ejb.EJB;
+import com.example.usercrud.entity.User;
+import com.example.usercrud.model.UsersResponse;
+import com.example.usercrud.proxy.UserProxySession;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.usercrud.service.PostService.getUserPostsResponses;
 
 
 @RequestScoped
@@ -21,80 +17,50 @@ import static com.example.usercrud.service.PostService.getUserPostsResponses;
 
 public class UserService {
 
-    @EJB
-    private UserLocal userLocal;
 
+    @Inject
+    private UserProxySession userProxySession;
 
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserResponse(@PathParam("id") int id) {
-        UsersResponse usersResponse = getUserResponseById(id);
-        return Response.status(Response.Status.OK).entity(usersResponse).build();
+    public UsersResponse getUserResponse(@PathParam("id") int id) {
+        return userProxySession.getUserById(id);
     }
 
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUsers() {
-        List<Users> users = userLocal.getAllUsers();
-        List<UsersResponse> response = new ArrayList<>();
+    public List<UsersResponse> getAllUsers() {
 
-        for (Users usersLocal: users){
-            UsersResponse usersResponse = getUserResponseById(usersLocal.getId());
-
-//            getUserPosts(usersLocal);
-
-            response.add(usersResponse);
-        }
-        return Response.status(Response.Status.OK).entity(response).build();
-
+        return userProxySession.getAllUsers();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response addUser(Users users) {
-        userLocal.insertUser(users);
-        return Response.status(Response.Status.CREATED).build();
+    public UsersResponse addUser(User user) {
+        return userProxySession.addUser(user);
     }
+
     @PATCH
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
     @Transactional
-    public Response updateUser(@PathParam("id") int id, Users user) {
+    public UsersResponse updateUser(@PathParam("id") int id, User user) {
 
-        userLocal.updateUser(id, user);
-        return Response.status(Response.Status.CREATED).build();
+        return userProxySession.updateUser(id, user);
+
     }
 
     @DELETE
     @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response deleteUser(@PathParam("id") int id) {
-
-        userLocal.deleteUser(id);
-
-        return Response.status(Response.Status.NO_CONTENT).build();
-    }
-
-    private UsersResponse getUserResponseById(int id) {
-        Users user = userLocal.getUserById(id);
-
-        UsersResponse usersResponse = null;
-
-        if (user != null) {
-            usersResponse = new UsersResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),getUserPosts(user));
-        }
-
-        return usersResponse;
-    }
-
-    private List<UserPostsResponse> getUserPosts(Users user) {
-
-        return getUserPostsResponses(user);
+    public UsersResponse deleteUser(@PathParam("id") int id) {
+        return userProxySession.deleteUser(id);
     }
 
 }

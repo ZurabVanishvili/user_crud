@@ -1,4 +1,4 @@
-package com.example.usercrud.model;
+package com.example.usercrud.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,6 +9,7 @@ import static java.util.Optional.ofNullable;
 import java.sql.Timestamp;
 
 @Entity
+@Table(name = "comment")
 @SuppressWarnings("unused")
 public class Comment {
 

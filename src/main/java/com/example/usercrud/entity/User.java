@@ -1,4 +1,4 @@
-package com.example.usercrud.model;
+package com.example.usercrud.entity;
 import static java.util.Optional.ofNullable;
 
 
@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 @SuppressWarnings("unused")
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +30,9 @@ public class Users {
 
 
 
-    public Users(){}
+    public User(){}
 
-    public Users(String firstName, String lastName, String mail) {
+    public User(String firstName, String lastName, String mail) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.mail = mail;
@@ -82,7 +83,7 @@ public class Users {
         return posts;
     }
 
-    public void updateUser(Users users){
+    public void updateUser(User users){
         this.firstName = ofNullable(users.firstName).orElse(firstName);
         this.lastName = ofNullable(users.lastName).orElse(lastName);
         this.mail = ofNullable(users.mail).orElse(mail);

@@ -1,4 +1,4 @@
-package com.example.usercrud.response;
+package com.example.usercrud.model;
 
 import java.util.List;
 
@@ -27,6 +27,13 @@ public class UsersResponse {
 
     }
 
+    public UsersResponse(int id, String firstName, String lastName, String mail) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mail = mail;
+
+    }
     public int getId() {
         return id;
     }

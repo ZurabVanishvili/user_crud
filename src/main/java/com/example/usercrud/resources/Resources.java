@@ -12,11 +12,13 @@ import jakarta.persistence.PersistenceContextType;
 @RequestScoped
 @Stateful
 public class Resources {
-    @PersistenceContext(name = "userCrud", type = PersistenceContextType.EXTENDED)
+    @PersistenceContext(name = "userCrud")
     private EntityManager em;
 
     @Produces
     public EntityManager getEm() {
         return em;
     }
+
+
 }

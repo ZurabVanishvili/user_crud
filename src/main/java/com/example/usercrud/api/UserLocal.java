@@ -1,18 +1,18 @@
 package com.example.usercrud.api;
 
-import com.example.usercrud.model.Users;
+import com.example.usercrud.entity.User;
 
 import java.util.List;
 
 public interface UserLocal {
 
-    List<Users> getAllUsers();
+    List<User> getAllUsers();
 
-    Users getUserById(int id);
+    User getUserById(int id);
 
-    void insertUser(Users users);
+    void insertUser(User users);
 
-    void updateUser(int id, Users users);
+    void updateUser(int id, User users);
 
     void deleteUser(int id);
 

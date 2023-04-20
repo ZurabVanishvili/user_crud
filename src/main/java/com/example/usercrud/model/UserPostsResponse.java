@@ -1,4 +1,4 @@
-package com.example.usercrud.response;
+package com.example.usercrud.model;
 
 import java.util.List;
 
