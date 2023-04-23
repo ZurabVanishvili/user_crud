@@ -1,12 +1,11 @@
 package com.example.usercrud.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import static java.util.Optional.ofNullable;
 
 @Entity
@@ -18,16 +17,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
+
     private String firstName;
+
+    @Column(nullable = false)
 
     private String lastName;
 
-
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String mail;
 
+    @Column(unique = true,nullable = false)
     private String login;
 
+    @Column(nullable = false)
     private String password;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
@@ -38,12 +42,11 @@ public class User {
 
     public User(){}
 
-    public User(String firstName, String lastName, String mail, String login, String password) {
+    public User(String firstName, String lastName, String mail, String login) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.mail = mail;
         this.login = login;
-        this.password = password;
     }
 
     public int getId() {
@@ -91,7 +94,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
 
@@ -108,11 +111,13 @@ public class User {
         return posts;
     }
 
-    public void updateUser(User users){
-        this.firstName = ofNullable(users.firstName).orElse(firstName);
-        this.lastName = ofNullable(users.lastName).orElse(lastName);
-        this.mail = ofNullable(users.mail).orElse(mail);
-        this.posts = ofNullable(users.posts).orElse(posts);
+    public void updateUser(User user){
+        this.firstName = ofNullable(user.firstName).orElse(firstName);
+        this.lastName = ofNullable(user.lastName).orElse(lastName);
+        this.mail = ofNullable(user.mail).orElse(mail);
+        this.posts = ofNullable(user.posts).orElse(posts);
+        this.login = ofNullable(user.getLogin()).orElse(login);
+        this.password = ofNullable(user.getPassword()).orElse(password);
 
     }
 

@@ -6,6 +6,7 @@ import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.ws.rs.NotFoundException;
 
@@ -36,6 +37,29 @@ public class UserSession implements UserLocal {
     @Override
     public User getUserById(int id) {
         return em.find(User.class, id);
+    }
+
+    @Override
+    public List<User> getUserByFirstName(String firstName) {
+        TypedQuery<User> query = em.createQuery(
+                "SELECT u FROM User u WHERE u.firstName = :firstname", User.class);
+        query.setParameter("firstname", firstName);
+        return query.getResultList();
+    }
+
+    @Override
+    public User getUserByLogin(String login) {
+        try {
+            TypedQuery<User> query = em.createQuery(
+
+                    "SELECT u from User u where u.login = :login", User.class
+            );
+            query.setParameter("login", login);
+
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            throw new NotFoundException("User not found");
+        }
     }
 
     @Override

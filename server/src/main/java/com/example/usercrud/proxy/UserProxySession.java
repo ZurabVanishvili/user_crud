@@ -4,7 +4,7 @@ import com.example.usercrud.api.UserLocal;
 import com.example.usercrud.entity.User;
 import com.example.usercrud.entity.UserPosts;
 import com.example.usercrud.model.UserPostsResponse;
-import com.example.usercrud.model.UsersResponse;
+import com.example.usercrud.model.UserResponse;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
@@ -21,43 +21,63 @@ public class UserProxySession {
     @Inject
     private UserPostProxySession proxySession;
 
-    public UsersResponse getUserById(int id) {
+    public UserResponse getUserById(int id) {
         User user = userLocal.getUserById(id);
 
-        UsersResponse usersResponse = null;
+        UserResponse userResponse = null;
 
         if (user != null) {
-            usersResponse = new UsersResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),getUserPosts(user.getPosts()));
+            userResponse = new UserResponse(user.getId(), user.getFirstName(),
+                    user.getLastName(), user.getMail(),user.getLogin(),user.getPassword(),
+                    getUserPosts(user.getPosts()));
         }
 
-        return usersResponse;
+        return userResponse;
     }
 
-    public List<UsersResponse> getAllUsers(int start, int pageSize){
+    public List<UserResponse> getAllUsers(int start, int pageSize){
         List<User> users = userLocal.getAllUsers(start, pageSize);
-        List<UsersResponse> response = new ArrayList<>();
+        List<UserResponse> response = new ArrayList<>();
 
         for (User usersLocal: users){
-            UsersResponse usersResponse = getUserById(usersLocal.getId());
-            response.add(usersResponse);
+            UserResponse userResponse = getUserById(usersLocal.getId());
+            response.add(userResponse);
         }
         return response;
     }
 
-    public UsersResponse addUser(User user){
+    public List<UserResponse> getUserByFirstName(String firstName){
+        List<User> users = userLocal.getUserByFirstName(firstName);
+        List<UserResponse> response = new ArrayList<>();
+
+        for (User user: users){
+            UserResponse userResponse= getUserById(user.getId());
+            response.add(userResponse);
+        }
+        return response;
+    }
+
+    public UserResponse getUserByLogin(String login){
+        User user = userLocal.getUserByLogin(login);
+        return new UserResponse(
+                user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()));
+    }
+
+    public UserResponse addUser(User user){
         userLocal.insertUser(user);
-       return new UsersResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),getUserPosts(user.getPosts()));
+       return new UserResponse(
+               user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()));
     }
 
-    public UsersResponse updateUser(int id, User user){
+    public UserResponse updateUser(int id, User user){
         userLocal.updateUser(id, user);
-        return new UsersResponse(id, user.getFirstName(), user.getLastName(), user.getMail(),getUserPosts(user.getPosts()));
+        return new UserResponse(id, user.getFirstName(), user.getLastName(), user.getMail(),user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()));
     }
 
-    public UsersResponse deleteUser(int id){
+    public UserResponse deleteUser(int id){
         User user= userLocal.getUserById(id);
-        UsersResponse response=
-                new UsersResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),getUserPosts(user.getPosts()));
+        UserResponse response=
+                new UserResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),user.getLogin(), user.getPassword(), getUserPosts(user.getPosts()));
         userLocal.deleteUser(id);
         return response;
     }

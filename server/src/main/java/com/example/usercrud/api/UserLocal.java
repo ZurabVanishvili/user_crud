@@ -10,6 +10,10 @@ public interface UserLocal {
 
     User getUserById(int id);
 
+    List<User> getUserByFirstName(String firstName);
+
+    User getUserByLogin(String login);
+
     void insertUser(User users);
 
     void updateUser(int id, User users);

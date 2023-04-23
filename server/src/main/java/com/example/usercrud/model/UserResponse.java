@@ -1,10 +1,12 @@
 package com.example.usercrud.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 @SuppressWarnings("unused")
 
-public class UsersResponse {
+public class UserResponse {
 
   private int id;
 
@@ -16,22 +18,25 @@ public class UsersResponse {
 
   private String login;
 
+  @JsonIgnore
   private String password;
 
   private List<UserPostsResponse> posts;
 
-  public UsersResponse(){}
+  public UserResponse(){}
 
-    public UsersResponse(int id, String firstName, String lastName, String mail, List<UserPostsResponse> posts) {
+    public UserResponse(int id, String firstName, String lastName, String mail,String login,String password, List<UserPostsResponse> posts) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.mail = mail;
         this.posts = posts;
+        this.login = login;
+        this.password = password;
 
     }
 
-    public UsersResponse(int id, String firstName, String lastName, String mail) {
+    public UserResponse(int id, String firstName, String lastName, String mail) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
