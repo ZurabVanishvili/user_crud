@@ -7,6 +7,7 @@ import com.example.usercrud.entity.User;
 import com.example.usercrud.entity.UserPosts;
 import com.example.usercrud.model.CommentResponse;
 import com.example.usercrud.model.UserPostsResponse;
+import com.example.usercrud.model.UserResponse;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 
@@ -23,12 +24,11 @@ public class UserPostProxySession {
     private UserLocal userLocal;
 
 
-
-    public List<UserPostsResponse> getAllPosts(int start, int pageSize){
+    public List<UserPostsResponse> getAllPosts(int start, int pageSize) {
         return getAllPostResponse(userPostLocal.getAllPosts(start, pageSize));
     }
 
-    public UserPostsResponse getPostById(int id){
+    public UserPostsResponse getPostById(int id) {
         UserPosts post = userPostLocal.getPostById(id);
         if (post == null) {
             return null;
@@ -43,11 +43,11 @@ public class UserPostProxySession {
         }
 
         return new UserPostsResponse(
-                post.getId(), post.getContent(), post.getTitle(),commentResponses
+                post.getId(), post.getContent(), post.getTitle(), commentResponses
         );
     }
 
-    public UserPostsResponse addPostToUser(int id, UserPosts post){
+    public UserPostsResponse addPostToUser(int id, UserPosts post) {
         User user = userLocal.getUserById(id);
         if (user == null) {
             return null;
@@ -60,48 +60,72 @@ public class UserPostProxySession {
     }
 
 
-    public UserPostsResponse updatePostOfUser(int id, UserPosts post){
-        userPostLocal.updatePost(id, post);
+    public UserPostsResponse updatePostOfUser(int id, UserPosts post, UserResponse user) {
 
-        UserPostsResponse response = getPostById(id);
-        return new UserPostsResponse(
-                id, post.getContent(),
-                post.getTitle(),response.getComments()
-        );
+        for (UserPostsResponse response1 : user.getPosts()) {
+            if (response1.getId() == id) {
+                userPostLocal.updatePost(id, post);
+
+                UserPostsResponse response = getPostById(id);
+                return new UserPostsResponse(
+                        id, post.getContent(),
+                        post.getTitle(), response.getComments()
+                );
+            }
+        }
+        try {
+            throw new IllegalAccessException("That post doesn't belong to you");
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+
     }
 
-    public UserPostsResponse deletePost(int id){
-        UserPosts post= userPostLocal.getPostById(id);
+    public UserPostsResponse deletePost(int id, UserResponse user) {
+        UserPosts post = userPostLocal.getPostById(id);
         UserPostsResponse response = getPostById(id);
 
-        userPostLocal.deleteUserPost(id);
+        for (UserPostsResponse response1 : user.getPosts()) {
+            if (response1.getId() == id) {
+                userPostLocal.deleteUserPost(id);
 
-        return new UserPostsResponse(
-                post.getId(), post.getContent(), post.getTitle(),response.getComments());
+                return new UserPostsResponse(
+                        post.getId(), post.getContent(), post.getTitle(), response.getComments());
+            }
+        }
+        try {
+            throw new IllegalAccessException("That post doesn't belong to you");
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
 
-
-    public  List<UserPostsResponse> getAllPostResponse(List<UserPosts> posts){
+    public List<UserPostsResponse> getAllPostResponse(List<UserPosts> posts) {
 
         UserPostsResponse response;
         CommentResponse commentResponse;
-        List<CommentResponse> commentResponseList ;
+        List<CommentResponse> commentResponseList;
         List<Comment> comments;
         List<UserPostsResponse> postResponses = new ArrayList<>();
 
-        if (posts!=null) {
+        if (posts != null) {
             for (UserPosts userPostsLocal : posts) {
                 comments = userPostsLocal.getComments();
                 commentResponseList = new ArrayList<>();
 
                 for (Comment comment : comments) {
-                    commentResponse = new CommentResponse(comment.getId(), comment.getCommentContent(), comment.getPosts().getId());
+                    commentResponse = new CommentResponse(
+                            comment.getId(), comment.getCommentContent(), comment.getPosts().getId()
+                    );
                     commentResponseList.add(commentResponse);
                 }
-                response = new UserPostsResponse(userPostsLocal.getId(),
-                        userPostsLocal.getContent(), userPostsLocal.getTitle(), commentResponseList);
-
+                response = new UserPostsResponse(
+                        userPostsLocal.getId(),
+                        userPostsLocal.getContent(),
+                        userPostsLocal.getTitle(), commentResponseList
+                );
 
                 postResponses.add(response);
             }

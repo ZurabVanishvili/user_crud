@@ -77,8 +77,12 @@ public class User {
         return mail;
     }
 
-    public void setMail(String email) {
-        this.mail = email;
+    public void setMail(String mail) {
+        if (mail.matches("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$")) {
+            this.mail = mail;
+        } else {
+            throw new IllegalArgumentException("Invalid email address.");
+        }
     }
 
     public String getLogin() {
@@ -94,7 +98,12 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        if (password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$")) {
+            this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        } else {
+            throw new IllegalArgumentException("Password must be at least 8 characters long and contain at least one digit," +
+                    " one lowercase letter, and one uppercase letter.");
+        }
     }
 
 
@@ -129,7 +138,6 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", mail='" + mail + '\'' +
                 ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
                 ", posts=" + posts +
                 '}';
     }

@@ -9,6 +9,7 @@ public interface CommentLocal {
     Comment getCommentById(int id);
 
     List<Comment> getAllComments(int start, int pageSize);
+    List<Comment> getAllComments();
 
     void addComment(Comment comment);
 

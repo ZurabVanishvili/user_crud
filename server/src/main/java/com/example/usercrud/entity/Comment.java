@@ -1,9 +1,6 @@
 package com.example.usercrud.entity;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.sql.Timestamp;
 
 import static java.util.Optional.ofNullable;
@@ -29,17 +26,14 @@ public class Comment {
     private UserPosts posts;
 
 
-
     @PrePersist
-    private void setCommentTime(){
-        if (this.commentTime==null){
-            this.commentTime= new Timestamp(System.currentTimeMillis());
+    private void setCommentTime() {
+        if (this.commentTime == null) {
+            this.commentTime = new Timestamp(System.currentTimeMillis());
         }
     }
 
-
-    public Comment(){}
-
+    public Comment() {}
 
     public Comment(String commentContent, Timestamp commentTime) {
         this.commentContent = commentContent;
@@ -94,7 +88,7 @@ public class Comment {
         return posts;
     }
 
-    public void updateComment(Comment comment){
+    public void updateComment(Comment comment) {
         this.commentContent = ofNullable(comment.commentContent).orElse(commentContent);
     }
 
@@ -106,6 +100,5 @@ public class Comment {
                 ", commentTime=" + commentTime +
                 '}';
     }
-
 
 }

@@ -33,6 +33,14 @@ public class CommentSession implements CommentLocal {
         return commentTypedQuery.getResultList();
     }
 
+    public List<Comment> getAllComments() {
+        TypedQuery<Comment> commentTypedQuery=
+                entityManager.createQuery(
+                        "select c from Comment c ",Comment.class
+                );
+        return commentTypedQuery.getResultList();
+    }
+
     @Override
     public void addComment(Comment comment) {
         entityManager.persist(comment);

@@ -1,9 +1,5 @@
 package com.example.usercrud.entity;
-
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
@@ -38,14 +34,12 @@ public class UserPosts {
     private List<Comment> comments;
 
 
-
     @PrePersist
     public void prePersist() {
         if (this.creationDate == null) {
             this.creationDate = new Timestamp(System.currentTimeMillis());
         }
     }
-
 
     public UserPosts(){}
 

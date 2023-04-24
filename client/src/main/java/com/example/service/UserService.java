@@ -1,52 +1,50 @@
 package com.example.service;
+
 import com.example.usercrud.entity.User;
+import com.example.usercrud.model.UserPostsResponse;
 import com.example.usercrud.model.UserResponse;
 import com.example.usercrud.proxy.UserProxySession;
-import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
+
 
 import java.util.List;
 
-
-
 @RequestScoped
 @Path("users")
-
 public class UserService {
-
 
     @Inject
     private UserProxySession userProxySession;
 
     @GET
-    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserResponse getUserResponse(@PathParam("id") int id) {
-        return userProxySession.getUserById(id);
+    @Path("/myInfo")
+    public UserResponse getUserResponse(@Context HttpServletRequest request) {
+        UserResponse locUser = (UserResponse) request.getAttribute("user");
+        return userProxySession.getUserById(locUser.getId());
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserResponse> getAllUsers(
-          @DefaultValue("10")  @QueryParam("pageSize") int pageSize,
-          @DefaultValue("1")  @QueryParam("pageNumber") int pageNumber) {
-        
-        int start= (pageNumber -1)* pageSize;
-        return userProxySession.getAllUsers(start,pageSize);
+            @DefaultValue("10") @QueryParam("pageSize") int pageSize,
+            @DefaultValue("1") @QueryParam("pageNumber") int pageNumber) {
+
+        int start = (pageNumber - 1) * pageSize;
+        return userProxySession.getAllUsers(start, pageSize);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getByFirstName")
     public List<UserResponse> getUserByFirstName(
-            @QueryParam("firstname") String firstName){
+            @QueryParam("firstname") String firstName) {
         return userProxySession.getUserByFirstName(firstName);
 
     }
@@ -63,11 +61,11 @@ public class UserService {
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{id}")
+//    @Path("{id}")
     @Transactional
-    public UserResponse updateUser(@PathParam("id") int id, User user) {
-
-        return userProxySession.updateUser(id, user);
+    public UserResponse updateUser(User user, @Context HttpServletRequest request) {
+        UserResponse locUser = (UserResponse) request.getAttribute("user");
+        return userProxySession.updateUser(locUser.getId(), user);
 
     }
 
@@ -79,4 +77,12 @@ public class UserService {
         return userProxySession.deleteUser(id);
     }
 
+
+    @GET
+    @Path("/getMyPosts")
+    @Produces(MediaType.APPLICATION_JSON)
+    @SuppressWarnings("unchecked")
+    public List<UserPostsResponse> testPost(@Context HttpServletRequest request){
+        return (List<UserPostsResponse>) request.getAttribute("posts");
+    }
 }

@@ -24,9 +24,10 @@ public class UserSession implements UserLocal {
     @Override
     public List<User> getAllUsers(int start, int pageSize) {
         TypedQuery<User> users = em.createQuery(
-                        "SELECT u FROM User u" +
-                                "         LEFT JOIN UserPosts up ON u.id = up.owner.id" +
-                                "         LEFT JOIN Comment c ON c.posts.id = up.id", User.class
+                        "SELECT u FROM User u"
+//                                "         LEFT JOIN UserPosts up ON u.id = up.owner.id" +
+//                                "         LEFT JOIN Comment c ON c.posts.id = up.id"
+                                , User.class
                 ).setFirstResult(start)
                 .setMaxResults(pageSize);
 
@@ -36,7 +37,11 @@ public class UserSession implements UserLocal {
 
     @Override
     public User getUserById(int id) {
-        return em.find(User.class, id);
+        User user = em.find(User.class, id);
+        if (user==null){
+            throw new NotFoundException("User not found");
+        }
+        return user;
     }
 
     @Override
@@ -51,14 +56,14 @@ public class UserSession implements UserLocal {
     public User getUserByLogin(String login) {
         try {
             TypedQuery<User> query = em.createQuery(
-
                     "SELECT u from User u where u.login = :login", User.class
             );
-            query.setParameter("login", login);
 
+            query.setParameter("login", login);
             return query.getSingleResult();
+
         } catch (NoResultException e) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("Invalid Username");
         }
     }
 
