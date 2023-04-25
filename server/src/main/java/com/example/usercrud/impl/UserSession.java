@@ -15,7 +15,7 @@ import java.util.List;
 
 @Local
 @Stateless
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 
 public class UserSession implements UserLocal {
 
@@ -23,15 +23,14 @@ public class UserSession implements UserLocal {
     private EntityManager em;
 
     @Override
-    public List<User> getAllUsers(int start, int pageSize) {
+    public List<User> getAllUsers(int start, int pageSize,String firstName) {
         TypedQuery<User> users = em.createQuery(
-                        "SELECT u FROM User u"
-//                                "         LEFT JOIN UserPosts up ON u.id = up.owner.id" +
-//                                "         LEFT JOIN Comment c ON c.posts.id = up.id"
+                        "select u from User u where u.firstName = :firstname "
                                 , User.class
                 ).setFirstResult(start)
                 .setMaxResults(pageSize);
 
+        users.setParameter("firstname",firstName);
 
         return users.getResultList();
     }
@@ -46,13 +45,6 @@ public class UserSession implements UserLocal {
         return user;
     }
 
-    @Override
-    public List<User> getUserByFirstName(String firstName) {
-        TypedQuery<User> query = em.createQuery(
-                "SELECT u FROM User u WHERE u.firstName = :firstname", User.class);
-        query.setParameter("firstname", firstName);
-        return query.getResultList();
-    }
 
     @Override
     public User getUserByLogin(String login) {

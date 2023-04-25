@@ -7,11 +7,10 @@ import java.util.List;
 
 public interface UserLocal {
 
-    List<User> getAllUsers(int start, int pageSize);
+    List<User> getAllUsers(int start, int pageSize, String firstName);
 
     User getUserById(int id);
 
-    List<User> getUserByFirstName(String firstName);
 
     User getUserByLogin(String login);
 

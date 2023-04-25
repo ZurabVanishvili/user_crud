@@ -1,8 +1,10 @@
 package com.example.usercrud.proxy;
 
 import com.example.usercrud.api.UserLocal;
+import com.example.usercrud.entity.Comment;
 import com.example.usercrud.entity.User;
 import com.example.usercrud.entity.UserPosts;
+import com.example.usercrud.model.CommentResponse;
 import com.example.usercrud.model.UserPostsResponse;
 import com.example.usercrud.model.UserResponse;
 import jakarta.ejb.EJB;
@@ -23,6 +25,8 @@ public class UserProxySession {
 
     @Inject
     private CommentProxySession commentProxySession;
+
+
     public UserResponse getUserById(int id) {
         User user = userLocal.getUserById(id);
 
@@ -31,14 +35,15 @@ public class UserProxySession {
         if (user != null) {
             userResponse = new UserResponse(user.getId(), user.getFirstName(),
                     user.getLastName(), user.getMail(),user.getLogin(),user.getPassword(),
-                    getUserPosts(user.getPosts()),commentProxySession.getCommentResponses(userLocal.getUserComments(user.getId())));
+                    getUserPosts(user.getPosts()),
+                    commentProxySession.getCommentResponses(userLocal.getUserComments(user.getId())));
         }
 
         return userResponse;
     }
 
-    public List<UserResponse> getAllUsers(int start, int pageSize){
-        List<User> users = userLocal.getAllUsers(start, pageSize);
+    public List<UserResponse> getAllUsers(int start, int pageSize, String firstName){
+        List<User> users = userLocal.getAllUsers(start, pageSize, firstName);
         List<UserResponse> response = new ArrayList<>();
 
         for (User usersLocal: users){
@@ -48,22 +53,13 @@ public class UserProxySession {
         return response;
     }
 
-    public List<UserResponse> getUserByFirstName(String firstName){
-        List<User> users = userLocal.getUserByFirstName(firstName);
-        List<UserResponse> response = new ArrayList<>();
 
-        for (User user: users){
-            UserResponse userResponse= getUserById(user.getId());
-            response.add(userResponse);
-        }
-        return response;
-    }
 
     public UserResponse getUserByLogin(String login){
         User user = userLocal.getUserByLogin(login);
         return new UserResponse(
                 user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),
-                user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()));
+                user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()),getUserComments(user.getComments()));
     }
 
     public UserResponse addUser(User user){
@@ -87,6 +83,9 @@ public class UserProxySession {
 
     private List<UserPostsResponse> getUserPosts(List<UserPosts> user) {
         return proxySession.getAllPostResponse(user);
+    }
+    private List<CommentResponse> getUserComments(List<Comment> comments) {
+        return commentProxySession.getCommentResponses(comments);
     }
 
 }

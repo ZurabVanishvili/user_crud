@@ -53,8 +53,6 @@ public class UserPostSession implements UserPostLocal {
     }
 
 
-
-
     @Override
     public void deleteUserPost(int id) {
         UserPosts userPosts = getPostById(id);

@@ -34,19 +34,19 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserResponse> getAllUsers(
             @DefaultValue("10") @QueryParam("pageSize") int pageSize,
-            @DefaultValue("1") @QueryParam("pageNumber") int pageNumber) {
+            @DefaultValue("1") @QueryParam("pageNumber") int pageNumber,
+            @QueryParam("firstName") String firstName) {
 
         int start = (pageNumber - 1) * pageSize;
-        return userProxySession.getAllUsers(start, pageSize);
+        return userProxySession.getAllUsers(start, pageSize,firstName);
     }
 
     @GET
+    @Path("/getMyPosts")
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getByFirstName")
-    public List<UserResponse> getUserByFirstName(
-            @QueryParam("firstname") String firstName) {
-        return userProxySession.getUserByFirstName(firstName);
-
+    @SuppressWarnings("unchecked")
+    public List<UserPostsResponse> testPost(@Context HttpServletRequest request){
+        return (List<UserPostsResponse>) request.getAttribute("posts");
     }
 
     @POST
@@ -77,12 +77,4 @@ public class UserService {
         return userProxySession.deleteUser(id);
     }
 
-
-    @GET
-    @Path("/getMyPosts")
-    @Produces(MediaType.APPLICATION_JSON)
-    @SuppressWarnings("unchecked")
-    public List<UserPostsResponse> testPost(@Context HttpServletRequest request){
-        return (List<UserPostsResponse>) request.getAttribute("posts");
-    }
 }

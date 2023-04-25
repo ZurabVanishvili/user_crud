@@ -9,11 +9,10 @@ public interface CommentLocal {
     Comment getCommentById(int id);
 
     List<Comment> getAllComments(int start, int pageSize);
-    List<Comment> getAllComments();
 
     void addComment(Comment comment);
 
     void updateComment(int commentId, Comment comment);
 
-    void removeComment(int id);
+    void deleteComment(int id);
 }

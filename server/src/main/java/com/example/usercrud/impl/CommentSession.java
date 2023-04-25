@@ -1,7 +1,10 @@
 package com.example.usercrud.impl;
 
 import com.example.usercrud.api.CommentLocal;
+import com.example.usercrud.api.UserLocal;
 import com.example.usercrud.entity.Comment;
+import com.example.usercrud.entity.User;
+import jakarta.ejb.EJB;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
@@ -19,27 +22,23 @@ public class CommentSession implements CommentLocal {
     @Inject
     private EntityManager entityManager;
 
+    @EJB
+    private UserLocal userLocal;
+
     @Override
     public Comment getCommentById(int id) {
-        return entityManager.find(Comment.class,id);
+        return entityManager.find(Comment.class, id);
     }
 
     @Override
     public List<Comment> getAllComments(int start, int pageSize) {
-        TypedQuery<Comment> commentTypedQuery=
+        TypedQuery<Comment> commentTypedQuery =
                 entityManager.createQuery(
-                        "select c from Comment c ",Comment.class
+                        "select c from Comment c ", Comment.class
                 ).setFirstResult(start).setMaxResults(pageSize);
         return commentTypedQuery.getResultList();
     }
 
-    public List<Comment> getAllComments() {
-        TypedQuery<Comment> commentTypedQuery=
-                entityManager.createQuery(
-                        "select c from Comment c ",Comment.class
-                );
-        return commentTypedQuery.getResultList();
-    }
 
     @Override
     public void addComment(Comment comment) {
@@ -50,7 +49,7 @@ public class CommentSession implements CommentLocal {
     public void updateComment(int commentId, Comment comment) {
         Comment localComment = getCommentById(commentId);
 
-        if (localComment!=null){
+        if (localComment != null) {
             localComment.updateComment(comment);
             return;
         }
@@ -58,8 +57,10 @@ public class CommentSession implements CommentLocal {
     }
 
     @Override
-    public void removeComment(int id) {
+    public void deleteComment(int id) {
         Comment comment = getCommentById(id);
         entityManager.remove(comment);
     }
+
+
 }

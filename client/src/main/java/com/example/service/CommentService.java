@@ -51,14 +51,28 @@ public class CommentService {
     @Transactional
     public CommentResponse updateComment(@PathParam("id") int id, Comment comment, @Context HttpServletRequest request) {
         UserResponse user = (UserResponse) request.getAttribute("user");
-        return commentProxySession.updateComment(id, comment,user);
+        return commentProxySession.updateComment(id, comment, user.getId());
     }
 
     @DELETE
-    @Transactional
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public CommentResponse deleteComment(@PathParam("id") int id) {
-        return commentProxySession.deleteComment(id);
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public CommentResponse deleteComment(@PathParam("id") int id, @Context HttpServletRequest request) {
+
+        List<CommentResponse> commentResponses = (List<CommentResponse> ) request.getAttribute("comments");
+
+        for (CommentResponse commentResponse:commentResponses){
+            if (commentResponse.getId()==id){
+                return commentProxySession.deleteComment(id);
+            }
+        }
+
+        try {
+            throw new IllegalAccessException("This comment doesn't belong to you");
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

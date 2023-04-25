@@ -44,6 +44,7 @@ public class BasicAuthFilter implements ContainerRequestFilter {
             if (user != null && BCrypt.checkpw(password, user.getPassword())) {
                 requestContext.setProperty("user", user);
                 requestContext.setProperty("posts", user.getPosts());
+                requestContext.setProperty("comments",user.getComments());
                 return;
             }
         }
