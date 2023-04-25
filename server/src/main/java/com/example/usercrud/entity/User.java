@@ -38,6 +38,9 @@ public class User {
     @JsonIgnore
     private List<UserPosts> posts;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Comment> comments;
 
 
     public User(){}
@@ -114,7 +117,16 @@ public class User {
         post.setOwner(this);
     }
 
+    public void addComment(Comment comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        comment.setAuthor(this);
+    }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
 
     public List<UserPosts> getPosts() {
         return posts;

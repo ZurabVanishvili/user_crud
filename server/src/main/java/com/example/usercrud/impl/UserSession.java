@@ -1,6 +1,7 @@
 package com.example.usercrud.impl;
 
 import com.example.usercrud.api.UserLocal;
+import com.example.usercrud.entity.Comment;
 import com.example.usercrud.entity.User;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
@@ -35,6 +36,7 @@ public class UserSession implements UserLocal {
         return users.getResultList();
     }
 
+
     @Override
     public User getUserById(int id) {
         User user = em.find(User.class, id);
@@ -56,7 +58,7 @@ public class UserSession implements UserLocal {
     public User getUserByLogin(String login) {
         try {
             TypedQuery<User> query = em.createQuery(
-                    "SELECT u from User u where u.login = :login", User.class
+                    "select u from User u where u.login = :login", User.class
             );
 
             query.setParameter("login", login);
@@ -64,6 +66,19 @@ public class UserSession implements UserLocal {
 
         } catch (NoResultException e) {
             throw new NotFoundException("Invalid Username");
+        }
+    }
+
+    @Override
+    public List<Comment> getUserComments(int id) {
+        try {
+            TypedQuery<Comment> query = em.createQuery(
+                    "select c from Comment c where c.author.id = :author_id",Comment.class
+            );
+            query.setParameter("author_id",id);
+            return query.getResultList();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 

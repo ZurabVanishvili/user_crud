@@ -2,7 +2,7 @@ package com.example.service;
 
 import com.example.usercrud.entity.Comment;
 import com.example.usercrud.model.CommentResponse;
-import com.example.usercrud.model.UserPostsResponse;
+import com.example.usercrud.model.UserResponse;
 import com.example.usercrud.proxy.CommentProxySession;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -27,8 +27,8 @@ public class CommentService {
     public List<CommentResponse> getAllComments(
             @DefaultValue("10") @QueryParam("pageSize") int pageSize,
             @DefaultValue("1") @QueryParam("pageNumber") int pageNumber) {
-        int start = (pageNumber - 1) * pageSize;
 
+        int start = (pageNumber - 1) * pageSize;
         return commentProxySession.getAllComments(start, pageSize);
 
     }
@@ -38,8 +38,9 @@ public class CommentService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public CommentResponse addComment(@PathParam("id") int id, Comment comment)  {
-        return commentProxySession.addComment(id, comment);
+    public CommentResponse addComment(@PathParam("id") int id, Comment comment, @Context HttpServletRequest request) {
+        UserResponse user = (UserResponse) request.getAttribute("user");
+        return commentProxySession.addComment(id, user.getId(), comment);
     }
 
 
@@ -48,10 +49,9 @@ public class CommentService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    @SuppressWarnings("unchecked")
     public CommentResponse updateComment(@PathParam("id") int id, Comment comment, @Context HttpServletRequest request) {
-        List<UserPostsResponse> posts = (List<UserPostsResponse>) request.getAttribute("posts");
-        return commentProxySession.updateComment(id, comment);
+        UserResponse user = (UserResponse) request.getAttribute("user");
+        return commentProxySession.updateComment(id, comment,user);
     }
 
     @DELETE

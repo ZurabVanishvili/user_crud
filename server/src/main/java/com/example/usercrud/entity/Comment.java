@@ -22,8 +22,13 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "posts_id")
     @JsonIgnore
-
     private UserPosts posts;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    @JsonIgnore
+    private User author;
 
 
     @PrePersist
@@ -77,6 +82,8 @@ public class Comment {
         }
     }
 
+
+
     public void removePost() {
         if (this.posts != null) {
             this.posts.removeComment(this);
@@ -91,6 +98,15 @@ public class Comment {
     public void updateComment(Comment comment) {
         this.commentContent = ofNullable(comment.commentContent).orElse(commentContent);
     }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
 
     @Override
     public String toString() {

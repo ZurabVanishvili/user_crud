@@ -21,6 +21,8 @@ public class UserProxySession {
     @Inject
     private UserPostProxySession proxySession;
 
+    @Inject
+    private CommentProxySession commentProxySession;
     public UserResponse getUserById(int id) {
         User user = userLocal.getUserById(id);
 
@@ -29,7 +31,7 @@ public class UserProxySession {
         if (user != null) {
             userResponse = new UserResponse(user.getId(), user.getFirstName(),
                     user.getLastName(), user.getMail(),user.getLogin(),user.getPassword(),
-                    getUserPosts(user.getPosts()));
+                    getUserPosts(user.getPosts()),commentProxySession.getCommentResponses(userLocal.getUserComments(user.getId())));
         }
 
         return userResponse;
@@ -60,7 +62,8 @@ public class UserProxySession {
     public UserResponse getUserByLogin(String login){
         User user = userLocal.getUserByLogin(login);
         return new UserResponse(
-                user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()));
+                user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),
+                user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()));
     }
 
     public UserResponse addUser(User user){

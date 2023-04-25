@@ -23,6 +23,8 @@ public class UserResponse {
 
   private List<UserPostsResponse> posts;
 
+  private List<CommentResponse> comments;
+
   public UserResponse(){}
 
     public UserResponse(int id, String firstName, String lastName, String mail,String login,String password, List<UserPostsResponse> posts) {
@@ -33,6 +35,20 @@ public class UserResponse {
         this.posts = posts;
         this.login = login;
         this.password = password;
+
+    }
+
+    public UserResponse(int id, String firstName, String lastName,
+                        String mail,String login,String password,
+                        List<UserPostsResponse> posts,List<CommentResponse> comments) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mail = mail;
+        this.posts = posts;
+        this.login = login;
+        this.password = password;
+        this.comments = comments;
 
     }
 
@@ -81,6 +97,14 @@ public class UserResponse {
 
     public void setPosts(List<UserPostsResponse> posts) {
         this.posts = posts;
+    }
+
+    public void setComments(List<CommentResponse> comments) {
+        this.comments = comments;
+    }
+
+    public List<CommentResponse> getComments() {
+        return comments;
     }
 
     public String getLogin() {
