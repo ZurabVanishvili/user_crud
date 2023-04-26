@@ -8,10 +8,8 @@ import java.util.List;
 public interface UserLocal {
 
     List<User> getAllUsers(int start, int pageSize, String firstName);
-    List<User> getAllUsers(int start, int pageSize);
 
     User getUserById(int id);
-
 
     User getUserByLogin(String login);
 

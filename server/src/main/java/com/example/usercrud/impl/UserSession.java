@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 
+import jakarta.persistence.criteria.*;
 import jakarta.ws.rs.NotFoundException;
 
 import java.util.List;
@@ -25,24 +26,25 @@ public class UserSession implements UserLocal {
 
     @Override
     public List<User> getAllUsers(int start, int pageSize, String firstName) {
-        TypedQuery<User> users = em.createQuery(
-                        "select u from User u where u.firstName = :firstname ", User.class)
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<User> query = cb.createQuery(User.class);
+
+        Root<User> userRoot = query.from(User.class);
+
+        Predicate checkFirstName;
+
+        if (firstName!=null){
+            checkFirstName = cb.equal(userRoot.get("firstName"),firstName);
+        }
+        else checkFirstName=cb.conjunction();
+
+        query.select(userRoot).where(checkFirstName);
+
+
+        TypedQuery<User> users = em.createQuery(query)
                 .setFirstResult(start).
                 setMaxResults(pageSize);
-
-        users.setParameter("firstname", firstName);
-
-        return users.getResultList();
-    }
-
-
-    @Override
-    public List<User> getAllUsers(int start, int pageSize) {
-        TypedQuery<User> users = em.createQuery(
-                        "select u from User u "
-                        , User.class
-                ).setFirstResult(start)
-                .setMaxResults(pageSize);
 
         return users.getResultList();
     }

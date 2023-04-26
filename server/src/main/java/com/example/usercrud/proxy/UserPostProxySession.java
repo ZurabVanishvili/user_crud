@@ -24,8 +24,9 @@ public class UserPostProxySession {
     private UserLocal userLocal;
 
 
-    public List<UserPostsResponse> getAllPosts(int start, int pageSize) {
-        return getAllPostResponse(userPostLocal.getAllPosts(start, pageSize));
+
+    public List<UserPostsResponse> getAllPosts(int start, int pageSize,String firstName) {
+        return getAllPostResponse(userPostLocal.getAllPosts(start, pageSize,firstName));
     }
 
     public UserPostsResponse getPostById(int id) {

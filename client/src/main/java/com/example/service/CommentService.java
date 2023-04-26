@@ -70,20 +70,22 @@ public class CommentService {
     @SuppressWarnings("unchecked")
     public CommentResponse deleteComment(@PathParam("id") int id, @Context HttpServletRequest request) {
 
-        List<CommentResponse> commentResponses = (List<CommentResponse> ) request.getAttribute("comments");
+        List<CommentResponse> commentResponses = (List<CommentResponse>) request.getAttribute("comments");
 
-        for (CommentResponse commentResponse:commentResponses){
-            if (commentResponse.getId()==id){
-                return commentProxySession.deleteComment(id);
-            }else {
-                try {
-                    throw new IllegalAccessException("This comment doesn't belong to you");
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e.getMessage());
+        if (commentResponses!=null) {
+            for (CommentResponse commentResponse : commentResponses) {
+                if (commentResponse.getId() == id) {
+                    return commentProxySession.deleteComment(id);
+                } else {
+
+                    try {
+                        throw new IllegalAccessException("This comment doesn't belong to you");
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e.getMessage());
+                    }
                 }
             }
         }
-
         throw new NotFoundException("Comment not found");
 
     }

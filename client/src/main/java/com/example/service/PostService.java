@@ -25,11 +25,11 @@ public class PostService {
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserPostsResponse> getAllPosts(
             @DefaultValue("10") @QueryParam("pageSize") int pageSize,
-            @DefaultValue("1") @QueryParam("pageNumber") int pageNumber
-    ) {
-        int start = (pageNumber - 1) * pageSize;
+            @DefaultValue("1") @QueryParam("pageNumber") int pageNumber,
+            @QueryParam("firstname") String firstName) {
 
-        return userPostProxySession.getAllPosts(start, pageSize);
+        int start = (pageNumber - 1) * pageSize;
+            return userPostProxySession.getAllPosts(start, pageSize, firstName);
     }
 
     @GET
@@ -40,7 +40,6 @@ public class PostService {
     }
 
     @POST
-//    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
@@ -55,7 +54,6 @@ public class PostService {
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public UserPostsResponse updatePostOfUser(@PathParam("id") int id, UserPosts post, @Context HttpServletRequest request) {
-
         UserResponse response = (UserResponse) request.getAttribute("user");
         return userPostProxySession.updatePostOfUser(id, post, response);
     }
@@ -65,7 +63,6 @@ public class PostService {
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public UserPostsResponse deletePost(@PathParam("id") int id, @Context HttpServletRequest request) {
-
         UserResponse response = (UserResponse) request.getAttribute("user");
         return userPostProxySession.deletePost(id,response);
     }

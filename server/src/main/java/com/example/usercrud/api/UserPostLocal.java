@@ -8,7 +8,7 @@ public interface UserPostLocal {
 
     UserPosts getPostById(int id);
 
-    List<UserPosts> getAllPosts(int start, int pageSize);
+    List<UserPosts> getAllPosts(int start, int pageSize,String firstName);
 
     void insertPost(UserPosts userPosts);
 
