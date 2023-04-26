@@ -22,12 +22,12 @@ import java.util.List;
 public class UserSession implements UserLocal {
 
     @Inject
-    private EntityManager em;
+    private EntityManager entityManager;
 
     @Override
     public List<User> getAllUsers(int start, int pageSize, String firstName) {
 
-        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = cb.createQuery(User.class);
 
         Root<User> userRoot = query.from(User.class);
@@ -42,7 +42,7 @@ public class UserSession implements UserLocal {
         query.select(userRoot).where(checkFirstName);
 
 
-        TypedQuery<User> users = em.createQuery(query)
+        TypedQuery<User> users = entityManager.createQuery(query)
                 .setFirstResult(start).
                 setMaxResults(pageSize);
 
@@ -52,7 +52,7 @@ public class UserSession implements UserLocal {
 
     @Override
     public User getUserById(int id) {
-        User user = em.find(User.class, id);
+        User user = entityManager.find(User.class, id);
         if (user == null) {
             throw new NotFoundException("User not found");
         }
@@ -63,7 +63,7 @@ public class UserSession implements UserLocal {
     @Override
     public User getUserByLogin(String login) {
         try {
-            TypedQuery<User> query = em.createQuery(
+            TypedQuery<User> query = entityManager.createQuery(
                     "select u from User u where u.login = :login", User.class
             );
 
@@ -78,7 +78,7 @@ public class UserSession implements UserLocal {
     @Override
     public List<Comment> getUserComments(int id) {
         try {
-            TypedQuery<Comment> query = em.createQuery(
+            TypedQuery<Comment> query = entityManager.createQuery(
                     "select c from Comment c where c.author.id = :author_id", Comment.class
             );
             query.setParameter("author_id", id);
@@ -90,7 +90,7 @@ public class UserSession implements UserLocal {
 
     @Override
     public void insertUser(User users) {
-        em.persist(users);
+        entityManager.persist(users);
     }
 
     @Override
@@ -108,6 +108,6 @@ public class UserSession implements UserLocal {
     @Override
     public void deleteUser(int id) {
         User deleteUsers = getUserById(id);
-        em.remove(deleteUsers);
+        entityManager.remove(deleteUsers);
     }
 }

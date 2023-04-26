@@ -6,6 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static java.util.Optional.ofNullable;
 
 @Entity
@@ -25,10 +26,10 @@ public class User {
 
     private String lastName;
 
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String mail;
 
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String login;
 
     @Column(nullable = false)
@@ -43,7 +44,8 @@ public class User {
     private List<Comment> comments;
 
 
-    public User(){}
+    public User() {
+    }
 
     public User(String firstName, String lastName, String mail, String login) {
         this.firstName = firstName;
@@ -81,7 +83,7 @@ public class User {
     }
 
     public void setMail(String mail) {
-        if (mail.matches("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$")) {
+        if (mail.matches("([a-zA-Z0-9_.-]+)@([a-zA-Z]+)(\\.)([a-zA-Z]+)")) {
             this.mail = mail;
         } else {
             throw new IllegalArgumentException("Invalid email address.");
@@ -93,7 +95,11 @@ public class User {
     }
 
     public void setLogin(String login) {
-        this.login = login;
+        if (login.matches("^[a-zA-Z0-9._-]{3,20}$")) {
+            this.login = login;
+        }else{
+            throw new IllegalArgumentException("Invalid username");
+        }
     }
 
     public String getPassword() {
@@ -132,7 +138,7 @@ public class User {
         return posts;
     }
 
-    public void updateUser(User user){
+    public void updateUser(User user) {
         this.firstName = ofNullable(user.firstName).orElse(firstName);
         this.lastName = ofNullable(user.lastName).orElse(lastName);
         this.mail = ofNullable(user.mail).orElse(mail);
