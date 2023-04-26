@@ -24,7 +24,7 @@ public class UserService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/myInfo")
+    @Path("/me")
     public UserResponse getUserResponse(@Context HttpServletRequest request) {
         UserResponse locUser = (UserResponse) request.getAttribute("user");
         return userProxySession.getUserById(locUser.getId());
@@ -34,11 +34,18 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserResponse> getAllUsers(
             @DefaultValue("10") @QueryParam("pageSize") int pageSize,
-            @DefaultValue("1") @QueryParam("pageNumber") int pageNumber,
-            @QueryParam("firstName") String firstName) {
+            @DefaultValue("1")  @QueryParam("pageNumber") int pageNumber,
+            @DefaultValue("")   @QueryParam("firstName") String firstName) {
 
         int start = (pageNumber - 1) * pageSize;
-        return userProxySession.getAllUsers(start, pageSize,firstName);
+
+        if (firstName.isEmpty()){
+            return userProxySession.getAllUsers(start,pageSize);
+        }
+        else {
+            return userProxySession.getAllUsers(start, pageSize,firstName);
+        }
+
     }
 
     @GET
@@ -61,7 +68,6 @@ public class UserService {
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-//    @Path("{id}")
     @Transactional
     public UserResponse updateUser(User user, @Context HttpServletRequest request) {
         UserResponse locUser = (UserResponse) request.getAttribute("user");

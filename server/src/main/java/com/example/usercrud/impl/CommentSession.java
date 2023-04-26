@@ -10,6 +10,10 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
 import jakarta.ws.rs.NotFoundException;
 
 import java.util.List;
@@ -37,6 +41,22 @@ public class CommentSession implements CommentLocal {
                         "select c from Comment c ", Comment.class
                 ).setFirstResult(start).setMaxResults(pageSize);
         return commentTypedQuery.getResultList();
+    }
+
+    @Override
+    public List<Comment> getAllCommentsOfUser(int id) {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Comment> criteriaQuery = cb.createQuery(Comment.class);
+        Root<Comment> root = criteriaQuery.from(Comment.class);
+
+        Join<Comment, User> userJoin = root.join("author");
+        criteriaQuery.select(root)
+                .where(cb.equal(userJoin.get("id"), id));
+
+        TypedQuery<Comment> query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
+
     }
 
 

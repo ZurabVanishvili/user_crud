@@ -9,13 +9,14 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+
 import jakarta.ws.rs.NotFoundException;
 
 import java.util.List;
 
 @Local
 @Stateless
-//@SuppressWarnings("unused")
+@SuppressWarnings("unused")
 
 public class UserSession implements UserLocal {
 
@@ -23,14 +24,25 @@ public class UserSession implements UserLocal {
     private EntityManager em;
 
     @Override
-    public List<User> getAllUsers(int start, int pageSize,String firstName) {
+    public List<User> getAllUsers(int start, int pageSize, String firstName) {
         TypedQuery<User> users = em.createQuery(
-                        "select u from User u where u.firstName = :firstname "
-                                , User.class
+                        "select u from User u where u.firstName = :firstname ", User.class)
+                .setFirstResult(start).
+                setMaxResults(pageSize);
+
+        users.setParameter("firstname", firstName);
+
+        return users.getResultList();
+    }
+
+
+    @Override
+    public List<User> getAllUsers(int start, int pageSize) {
+        TypedQuery<User> users = em.createQuery(
+                        "select u from User u "
+                        , User.class
                 ).setFirstResult(start)
                 .setMaxResults(pageSize);
-
-        users.setParameter("firstname",firstName);
 
         return users.getResultList();
     }
@@ -39,7 +51,7 @@ public class UserSession implements UserLocal {
     @Override
     public User getUserById(int id) {
         User user = em.find(User.class, id);
-        if (user==null){
+        if (user == null) {
             throw new NotFoundException("User not found");
         }
         return user;
@@ -65,9 +77,9 @@ public class UserSession implements UserLocal {
     public List<Comment> getUserComments(int id) {
         try {
             TypedQuery<Comment> query = em.createQuery(
-                    "select c from Comment c where c.author.id = :author_id",Comment.class
+                    "select c from Comment c where c.author.id = :author_id", Comment.class
             );
-            query.setParameter("author_id",id);
+            query.setParameter("author_id", id);
             return query.getResultList();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

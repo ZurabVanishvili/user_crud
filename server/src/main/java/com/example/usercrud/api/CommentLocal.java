@@ -10,6 +10,8 @@ public interface CommentLocal {
 
     List<Comment> getAllComments(int start, int pageSize);
 
+    List<Comment> getAllCommentsOfUser(int id);
+
     void addComment(Comment comment);
 
     void updateComment(int commentId, Comment comment);

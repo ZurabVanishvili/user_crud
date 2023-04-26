@@ -53,6 +53,16 @@ public class UserProxySession {
         return response;
     }
 
+    public List<UserResponse> getAllUsers(int start, int pageSize){
+        List<User> users = userLocal.getAllUsers(start, pageSize);
+        List<UserResponse> response = new ArrayList<>();
+
+        for (User usersLocal: users){
+            UserResponse userResponse = getUserById(usersLocal.getId());
+            response.add(userResponse);
+        }
+        return response;
+    }
 
 
     public UserResponse getUserByLogin(String login){

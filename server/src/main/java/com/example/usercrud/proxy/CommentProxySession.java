@@ -31,6 +31,10 @@ public class CommentProxySession {
         return getCommentResponses(comments);
     }
 
+    public List<CommentResponse> getAllCommentsOfUser(int id){
+        List<Comment> comments = commentLocal.getAllCommentsOfUser(id);
+        return getCommentResponses(comments);
+    }
 
     public List<CommentResponse> getCommentResponses(List<Comment> comments) {
         List<CommentResponse> response = new ArrayList<>();
