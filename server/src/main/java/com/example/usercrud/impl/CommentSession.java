@@ -77,7 +77,7 @@ public class CommentSession implements CommentLocal {
     }
 
     @Override
-    public void deleteComment(int id, int user_id) {
+    public void deleteComment(int id) {
         Comment comment = getCommentById(id);
         entityManager.remove(comment);
     }

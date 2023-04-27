@@ -48,6 +48,10 @@ public class UserPostProxySession {
         );
     }
 
+    public List<UserPostsResponse> getPostByCommentSizeAndUsername(int commentSize, String username,String title){
+        return getAllPostResponse(userPostLocal.getPostByCommentSizeAndUsername(commentSize,username,title));
+    }
+
     public UserPostsResponse addPostToUser(int id, UserPosts post) {
         User user = userLocal.getUserById(id);
         if (user == null) {
@@ -95,11 +99,7 @@ public class UserPostProxySession {
                         post.getId(), post.getContent(), post.getTitle(), response.getComments());
             }
         }
-        try {
-            throw new IllegalAccessException("That post doesn't belong to you");
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        throw new RuntimeException("That post doesn't belong to you");
     }
 
 

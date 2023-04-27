@@ -39,6 +39,18 @@ public class PostService {
         return userPostProxySession.getPostById(id);
     }
 
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/filterPost")
+    public List<UserPostsResponse> getPostByCommentSizeAndUsername(
+            @DefaultValue("0") @QueryParam("commentSize") int commentSize,
+            @QueryParam("username") String username,
+            @QueryParam("title") String title)
+    {
+        return userPostProxySession.getPostByCommentSizeAndUsername(commentSize,username,title);
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

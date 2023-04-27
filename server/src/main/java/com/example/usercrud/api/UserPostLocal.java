@@ -10,6 +10,7 @@ public interface UserPostLocal {
 
     List<UserPosts> getAllPosts(int start, int pageSize,String firstName);
 
+    List<UserPosts> getPostByCommentSizeAndUsername(int commentSize, String username, String title);
     void insertPost(UserPosts userPosts);
 
     void updatePost(int postId, UserPosts newPost);

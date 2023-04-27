@@ -34,10 +34,9 @@ public class UserSession implements UserLocal {
 
         Predicate checkFirstName;
 
-        if (firstName!=null){
-            checkFirstName = cb.equal(userRoot.get("firstName"),firstName);
-        }
-        else checkFirstName=cb.conjunction();
+        if (firstName != null) {
+            checkFirstName = cb.equal(userRoot.get("firstName"), firstName);
+        } else checkFirstName = cb.conjunction();
 
         query.select(userRoot).where(checkFirstName);
 
@@ -77,16 +76,14 @@ public class UserSession implements UserLocal {
 
     @Override
     public List<Comment> getUserComments(int id) {
-        try {
-            TypedQuery<Comment> query = entityManager.createQuery(
-                    "select c from Comment c where c.author.id = :author_id", Comment.class
-            );
-            query.setParameter("author_id", id);
-            return query.getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        TypedQuery<Comment> query = entityManager.createQuery(
+                "select c from Comment c where c.author.id = :author_id", Comment.class
+        );
+        query.setParameter("author_id", id);
+        return query.getResultList();
+
     }
+
 
     @Override
     public void insertUser(User users) {

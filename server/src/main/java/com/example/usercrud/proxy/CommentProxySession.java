@@ -100,15 +100,15 @@ public class CommentProxySession {
         if (comment==null){
             throw new NotFoundException("Comment doesn't exist");
         }
-        CommentResponse commentResponse = new CommentResponse(
-                comment.getId(), comment.getCommentContent(), comment.getPosts().getId()
-        );
 
         if (checkIfUserIsAuthor(id, getAllCommentsOfUser(user_id))) {
-            commentLocal.deleteComment(id,user_id);
-        }
-        return commentResponse;
+            commentLocal.deleteComment(id);
 
+            return new CommentResponse(
+                    comment.getId(), comment.getCommentContent(), comment.getPosts().getId()
+            );
+        }
+        throw new RuntimeException("That comment doesn't belong to you");
     }
 
 
@@ -118,7 +118,8 @@ public class CommentProxySession {
                 return commentResponse.getId() == id;
             }
         }
-        throw new RuntimeException("Comment doesn't belong to you");
+
+        return false;
     }
 
 
