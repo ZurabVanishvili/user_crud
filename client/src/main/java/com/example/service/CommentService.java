@@ -26,11 +26,12 @@ public class CommentService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("myComments")
-    public List<CommentResponse> getMyComments(@Context HttpServletRequest request){
+    public List<CommentResponse> getMyComments(@Context HttpServletRequest request) {
         UserResponse user = (UserResponse) request.getAttribute("user");
         return commentProxySession.getAllCommentsOfUser(user.getId());
 
     }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<CommentResponse> getAllComments(
@@ -67,26 +68,8 @@ public class CommentService {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
     @Transactional
-    @SuppressWarnings("unchecked")
     public CommentResponse deleteComment(@PathParam("id") int id, @Context HttpServletRequest request) {
-
-        List<CommentResponse> commentResponses = (List<CommentResponse>) request.getAttribute("comments");
-
-        if (commentResponses!=null) {
-            for (CommentResponse commentResponse : commentResponses) {
-                if (commentResponse.getId() == id) {
-                    return commentProxySession.deleteComment(id);
-                } else {
-
-                    try {
-                        throw new IllegalAccessException("This comment doesn't belong to you");
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e.getMessage());
-                    }
-                }
-            }
-        }
-        throw new NotFoundException("Comment not found");
-
+        UserResponse user = (UserResponse) request.getAttribute("user");
+        return commentProxySession.deleteComment(id, user.getId());
     }
 }

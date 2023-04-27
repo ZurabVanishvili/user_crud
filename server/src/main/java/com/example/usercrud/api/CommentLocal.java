@@ -16,5 +16,5 @@ public interface CommentLocal {
 
     void updateComment(int commentId, Comment comment);
 
-    void deleteComment(int id);
+    void deleteComment(int id,int user_id);
 }
