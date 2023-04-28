@@ -42,7 +42,7 @@ public class PostService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/filterPost")
+    @Path("/filter")
     public List<UserPostsResponse> getPostByCommentSizeAndUsername(
             @DefaultValue("0") @QueryParam("commentSize") int commentSize,
             @QueryParam("username") String username,

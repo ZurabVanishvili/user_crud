@@ -11,7 +11,6 @@ public class UserPostsResponse {
 
     private String title;
 
-
     private List<CommentResponse> comments;
 
 

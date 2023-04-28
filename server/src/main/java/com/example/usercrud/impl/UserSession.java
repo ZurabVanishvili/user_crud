@@ -3,6 +3,7 @@ package com.example.usercrud.impl;
 import com.example.usercrud.api.UserLocal;
 import com.example.usercrud.entity.Comment;
 import com.example.usercrud.entity.User;
+import com.example.usercrud.entity.User_;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
@@ -35,7 +36,7 @@ public class UserSession implements UserLocal {
         Predicate checkFirstName;
 
         if (firstName != null) {
-            checkFirstName = cb.equal(userRoot.get("firstName"), firstName);
+            checkFirstName = cb.equal(userRoot.get(User_.FIRST_NAME), firstName);
         } else checkFirstName = cb.conjunction();
 
         query.select(userRoot).where(checkFirstName);

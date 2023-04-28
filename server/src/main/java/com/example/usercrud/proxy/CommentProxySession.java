@@ -7,6 +7,8 @@ import com.example.usercrud.entity.Comment;
 import com.example.usercrud.entity.User;
 import com.example.usercrud.entity.UserPosts;
 import com.example.usercrud.model.CommentResponse;
+import com.example.usercrud.model.UserPostsResponse;
+import com.example.usercrud.model.UserResponse;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.NotFoundException;
@@ -31,7 +33,7 @@ public class CommentProxySession {
         return getCommentResponses(comments);
     }
 
-    public List<CommentResponse> getAllCommentsOfUser(int id){
+    public List<CommentResponse> getAllCommentsOfUser(int id) {
         List<Comment> comments = commentLocal.getAllCommentsOfUser(id);
         return getCommentResponses(comments);
     }
@@ -95,13 +97,13 @@ public class CommentProxySession {
         }
     }
 
-    public CommentResponse deleteComment(int id, int user_id) {
+    public CommentResponse deleteComment(int id, UserResponse user) {
         Comment comment = commentLocal.getCommentById(id);
-        if (comment==null){
+        if (comment == null) {
             throw new NotFoundException("Comment doesn't exist");
         }
 
-        if (checkIfUserIsAuthor(id, getAllCommentsOfUser(user_id))) {
+        if (checkIfUserIsAuthor(id, user) || checkIfUserIsOwner(comment.getPosts().getId(), user)) {
             commentLocal.deleteComment(id);
 
             return new CommentResponse(
@@ -112,13 +114,24 @@ public class CommentProxySession {
     }
 
 
-    public boolean checkIfUserIsAuthor(int id, List<CommentResponse> commentResponses){
-        if (commentResponses != null) {
-            for (CommentResponse commentResponse : commentResponses) {
-                return commentResponse.getId() == id;
+    private boolean checkIfUserIsAuthor(int id, UserResponse user) {
+        if (user.getComments() != null) {
+            for (CommentResponse commentResponse : user.getComments()) {
+                if (commentResponse.getId() == id) {
+                    return true;
+                }
             }
         }
 
+        return false;
+    }
+
+    private boolean checkIfUserIsOwner(int id, UserResponse user) {
+        for (UserPostsResponse response1 : user.getPosts()) {
+            if (response1.getId() == id) {
+                return true;
+            }
+        }
         return false;
     }
 

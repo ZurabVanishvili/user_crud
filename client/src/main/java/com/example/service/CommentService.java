@@ -70,6 +70,6 @@ public class CommentService {
     @Transactional
     public CommentResponse deleteComment(@PathParam("id") int id, @Context HttpServletRequest request) {
         UserResponse user = (UserResponse) request.getAttribute("user");
-        return commentProxySession.deleteComment(id, user.getId());
+        return commentProxySession.deleteComment(id, user);
     }
 }

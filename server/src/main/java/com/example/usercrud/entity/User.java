@@ -3,27 +3,24 @@ package com.example.usercrud.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.mindrot.jbcrypt.BCrypt;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static java.util.Optional.ofNullable;
 
 @Entity
 @Table(name = "users")
+
 @SuppressWarnings("unused")
-public class User {
+public  class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(nullable = false)
-
     private String firstName;
 
     @Column(nullable = false)
-
     private String lastName;
 
     @Column(unique = true, nullable = false)

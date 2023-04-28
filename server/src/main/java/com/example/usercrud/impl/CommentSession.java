@@ -3,7 +3,10 @@ package com.example.usercrud.impl;
 import com.example.usercrud.api.CommentLocal;
 import com.example.usercrud.api.UserLocal;
 import com.example.usercrud.entity.Comment;
+import com.example.usercrud.entity.Comment_;
 import com.example.usercrud.entity.User;
+
+import com.example.usercrud.entity.User_;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
@@ -50,9 +53,9 @@ public class CommentSession implements CommentLocal {
         CriteriaQuery<Comment> criteriaQuery = cb.createQuery(Comment.class);
         Root<Comment> root = criteriaQuery.from(Comment.class);
 
-        Join<Comment, User> userJoin = root.join("author");
+        Join<Comment, User> userJoin = root.join(Comment_.AUTHOR);
         criteriaQuery.select(root)
-                .where(cb.equal(userJoin.get("id"), id));
+                .where(cb.equal(userJoin.get(User_.ID), id));
 
         TypedQuery<Comment> query = entityManager.createQuery(criteriaQuery);
         return query.getResultList();

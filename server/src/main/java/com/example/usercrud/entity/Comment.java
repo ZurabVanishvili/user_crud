@@ -2,7 +2,6 @@ package com.example.usercrud.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
-
 import static java.util.Optional.ofNullable;
 
 @Entity

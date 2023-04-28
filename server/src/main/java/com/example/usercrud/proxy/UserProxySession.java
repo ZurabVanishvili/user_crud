@@ -10,7 +10,6 @@ import com.example.usercrud.model.UserResponse;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,24 +58,31 @@ public class UserProxySession {
         User user = userLocal.getUserByLogin(login);
         return new UserResponse(
                 user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),
-                user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()),getUserComments(user.getComments()));
+                user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()),getUserComments(user.getComments())
+        );
     }
 
     public UserResponse addUser(User user){
         userLocal.insertUser(user);
        return new UserResponse(
-               user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()));
+               user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),
+               user.getLogin(), user.getPassword(),getUserPosts(user.getPosts())
+       );
     }
 
     public UserResponse updateUser(int id, User user){
         userLocal.updateUser(id, user);
-        return new UserResponse(id, user.getFirstName(), user.getLastName(), user.getMail(),user.getLogin(),user.getPassword(),getUserPosts(user.getPosts()));
+        return new UserResponse(id, user.getFirstName(), user.getLastName(), user.getMail()
+                ,user.getLogin(),user.getPassword(),getUserPosts(user.getPosts())
+        );
     }
 
     public UserResponse deleteUser(int id){
         User user= userLocal.getUserById(id);
         UserResponse response=
-                new UserResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getMail(),user.getLogin(), user.getPassword(), getUserPosts(user.getPosts()));
+                new UserResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getMail()
+                        ,user.getLogin(), user.getPassword(), getUserPosts(user.getPosts())
+                );
         userLocal.deleteUser(id);
         return response;
     }

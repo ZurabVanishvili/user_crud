@@ -91,6 +91,10 @@ public class UserPostProxySession {
         UserPosts post = userPostLocal.getPostById(id);
         UserPostsResponse response = getPostById(id);
 
+        if (response==null){
+            throw new RuntimeException("Post not found");
+        }
+
         for (UserPostsResponse response1 : user.getPosts()) {
             if (response1.getId() == id) {
                 userPostLocal.deleteUserPost(id);

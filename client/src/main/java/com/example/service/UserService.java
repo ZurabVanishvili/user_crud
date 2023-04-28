@@ -42,7 +42,7 @@ public class UserService {
     }
 
     @GET
-    @Path("/getMyPosts")
+    @Path("/myPosts")
     @Produces(MediaType.APPLICATION_JSON)
     @SuppressWarnings("unchecked")
     public List<UserPostsResponse> testPost(@Context HttpServletRequest request) {
